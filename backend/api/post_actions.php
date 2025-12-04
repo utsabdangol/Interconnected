@@ -56,13 +56,14 @@ if ($action === 'get_posts' && $_SERVER['REQUEST_METHOD'] === 'GET') {
                 u.username,
                 c.com_name,
                 COUNT(DISTINCT pl.id) as like_count,
-                COUNT(DISTINCT cm.id) as comment_count,
+                COUNT(DISTINCT cmt.id) as comment_count,
                 MAX(CASE WHEN pl.user_id = ? THEN 1 ELSE 0 END) as user_liked
             FROM posts p
             INNER JOIN users u ON p.user_id = u.id
             INNER JOIN communities c ON p.community_id = c.id
+            INNER JOIN community_members cmem ON p.community_id = cmem.community_id AND cmem.user_id = ?
             LEFT JOIN post_likes pl ON p.id = pl.post_id
-            LEFT JOIN comments cm ON p.id = cm.post_id";
+            LEFT JOIN comments cmt ON p.id = cmt.post_id";
     
     if ($community_id) {
         $sql .= " WHERE p.community_id = ?";
@@ -73,9 +74,11 @@ if ($action === 'get_posts' && $_SERVER['REQUEST_METHOD'] === 'GET') {
     $stmt = mysqli_prepare($conn, $sql);
     
     if ($community_id) {
-        mysqli_stmt_bind_param($stmt, "ii", $user_id, $community_id);
+        // Three parameters: user_id (for user_liked), user_id (for membership), community_id
+        mysqli_stmt_bind_param($stmt, "iii", $user_id, $user_id, $community_id);
     } else {
-        mysqli_stmt_bind_param($stmt, "i", $user_id);
+        // Two parameters: user_id (for user_liked), user_id (for membership)
+        mysqli_stmt_bind_param($stmt, "ii", $user_id, $user_id);
     }
     
     mysqli_stmt_execute($stmt);

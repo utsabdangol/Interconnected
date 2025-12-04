@@ -4,8 +4,8 @@ import Community from "./Community";
 import Create_community from "./Create_community";
 import Create_post from "./Create_post";
 import logo from "../assets/logo.png";
-import Feed from "./feed";
-
+import Feed from "./Feed";
+import LogoutButton from "../components/LogoutButton";
 function Home() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
@@ -32,56 +32,33 @@ function Home() {
 
   return (
     <>
-      <nav className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between shadow-lg">
+<nav className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between shadow-lg">
 
-  {/* Left section: Logo + Home */}
+  {/* Left section: Logo + Nav Links */}
   <div className="flex items-center space-x-4">
     <img 
       src={logo}
       className="w-10 h-10 rounded-full border border-slate-600"
     />
 
-    <Link 
-      to="/home" 
-      className="hover:text-emerald-400 transition"
-    >
-      Home
-    </Link>
-
-    <Link 
-      to="/home/community" 
-      className="hover:text-emerald-400 transition"
-    >
-      Community
-    </Link>
-
-    <Link 
-      to="/home/profile" 
-      className="hover:text-emerald-400 transition"
-    >
-      Profile
-    </Link>
-    <Link 
-      to="/home/post" 
-      className="hover:text-emerald-400 transition"
-    >
-      Post
-    </Link>
-
-    <Link 
-      to="/home/create_community" 
-      className="hover:text-emerald-400 transition"
-    >
-      Create Community
-    </Link>
+    <Link to="/home" className="hover:text-emerald-400 transition">Home</Link>
+    <Link to="/home/community" className="hover:text-emerald-400 transition">Community</Link>
+    <Link to="/home/profile" className="hover:text-emerald-400 transition">Profile</Link>
+    <Link to="/home/post" className="hover:text-emerald-400 transition">Post</Link>
+    <Link to="/home/create_community" className="hover:text-emerald-400 transition">Create Community</Link>
   </div>
 
-  {/* Right section: Logged-in username */}
-  <div className="text-slate-300">
-    Welcome, <span className="text-white font-semibold">{username}</span>!
+  {/* Right section: Welcome + Logout */}
+  <div className="flex items-center space-x-4">
+    <div className="text-slate-300">
+      Welcome, <span className="text-white font-semibold">{username}</span>!
+    </div>
+
+    <LogoutButton />
   </div>
 
 </nav>
+
 
       
       <Routes>
