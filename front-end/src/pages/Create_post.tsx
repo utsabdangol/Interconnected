@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 interface CreatePostProps {
   userId: string | null;
@@ -158,7 +159,7 @@ const CreatePost = ({ userId }: CreatePostProps) => {
                 onClick={() => navigate("/home")}
                 className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
               >
-                Browse Communities
+                <Link to="/home/community" className="hover:text-emerald-400 transition"> Browse Community</Link>
               </button>
             </div>
           ) : (

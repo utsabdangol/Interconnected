@@ -61,7 +61,9 @@ if ($action === 'get_posts' && $_SERVER['REQUEST_METHOD'] === 'GET') {
             FROM posts p
             INNER JOIN users u ON p.user_id = u.id
             INNER JOIN communities c ON p.community_id = c.id
-            INNER JOIN community_members cmem ON p.community_id = cmem.community_id AND cmem.user_id = ?
+            INNER JOIN community_members cmem ON p.community_id = cmem.community_id 
+                AND cmem.user_id = ? 
+                AND cmem.role != 'requesting'
             LEFT JOIN post_likes pl ON p.id = pl.post_id
             LEFT JOIN comments cmt ON p.id = cmt.post_id";
     
@@ -74,10 +76,8 @@ if ($action === 'get_posts' && $_SERVER['REQUEST_METHOD'] === 'GET') {
     $stmt = mysqli_prepare($conn, $sql);
     
     if ($community_id) {
-        // Three parameters: user_id (for user_liked), user_id (for membership), community_id
         mysqli_stmt_bind_param($stmt, "iii", $user_id, $user_id, $community_id);
     } else {
-        // Two parameters: user_id (for user_liked), user_id (for membership)
         mysqli_stmt_bind_param($stmt, "ii", $user_id, $user_id);
     }
     

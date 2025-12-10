@@ -30,7 +30,7 @@ if (!$conn) {
 // Get user_id from session
 $user_id = isset($_SESSION['id']) ? $_SESSION['id'] : null;
 
-// Fetch communities with member count and check if user is already a member
+// Fetch ALL communities (both public and private) with member status
 $sql = "SELECT 
     c.id,
     c.com_name,
@@ -38,8 +38,9 @@ $sql = "SELECT
     c.com_description,
     c.created_by,
     c.created_at,
-    COUNT(cm.id) as member_count,
-    MAX(CASE WHEN cm.user_id = ? THEN 1 ELSE 0 END) as is_member
+    c.privacy,
+    COUNT(CASE WHEN cm.role != 'requesting' THEN cm.id END) as member_count,
+    MAX(CASE WHEN cm.user_id = ? THEN cm.role ELSE NULL END) as user_role
 FROM communities c
 LEFT JOIN community_members cm ON c.id = cm.community_id
 GROUP BY c.id

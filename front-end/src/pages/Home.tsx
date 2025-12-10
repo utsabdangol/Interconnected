@@ -6,11 +6,16 @@ import Create_post from "./Create_post";
 import logo from "../assets/logo.png";
 import Feed from "./Feed";
 import LogoutButton from "../components/LogoutButton";
+import Profile from "./Profile.tsx";
+import Admin from "./Admin.tsx";
+
 function Home() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
-  
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Single useEffect - removed duplicate
   useEffect(() => {
     fetch("http://localhost/Interconnected/backend/api/session-check.php", {
       method: "GET",
@@ -21,6 +26,7 @@ function Home() {
         if (data.logged_in) {
           setUserId(data.user.id);
           setUsername(data.user.username);
+          setIsAdmin(data.user.role_u === 'admin');
         } else {
           navigate("/login");
         }
@@ -32,41 +38,42 @@ function Home() {
 
   return (
     <>
-<nav className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between shadow-lg">
-
-  {/* Left section: Logo + Nav Links */}
-  <div className="flex items-center space-x-4">
-    <img 
-      src={logo}
-      className="w-10 h-10 rounded-full border border-slate-600"
-    />
-
-    <Link to="/home" className="hover:text-emerald-400 transition">Home</Link>
-    <Link to="/home/community" className="hover:text-emerald-400 transition">Community</Link>
-    <Link to="/home/profile" className="hover:text-emerald-400 transition">Profile</Link>
-    <Link to="/home/post" className="hover:text-emerald-400 transition">Post</Link>
-    <Link to="/home/create_community" className="hover:text-emerald-400 transition">Create Community</Link>
-  </div>
-
-  {/* Right section: Welcome + Logout */}
-  <div className="flex items-center space-x-4">
-    <div className="text-slate-300">
-      Welcome, <span className="text-white font-semibold">{username}</span>!
-    </div>
-
-    <LogoutButton />
-  </div>
-
-</nav>
-
-
+      <nav className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between shadow-lg">
+        {/* Left section: Logo + Nav Links */}
+        <div className="flex items-center space-x-4">
+          <img 
+            src={logo}
+            alt="Logo"
+            className="w-10 h-10 rounded-full border border-slate-600"
+          />
+          <Link to="/home" className="hover:text-emerald-400 transition">Home</Link>
+          <Link to="/home/community" className="hover:text-emerald-400 transition">Community</Link>
+          <Link to="/home/profile" className="hover:text-emerald-400 transition">Profile</Link>
+          <Link to="/home/post" className="hover:text-emerald-400 transition">Post</Link>
+          <Link to="/home/create_community" className="hover:text-emerald-400 transition">Create Community</Link>
+          {isAdmin && (
+            <Link to="/home/admin" className="text-white hover:text-red-400 transition">
+              Admin
+            </Link>
+          )}
+        </div>
+        
+        {/* Right section: Welcome + Logout */}
+        <div className="flex items-center space-x-4">
+          <div className="text-slate-300">
+            Welcome, <span className="text-white font-semibold">{username}</span>!
+          </div>
+          <LogoutButton />
+        </div>
+      </nav>
       
       <Routes>
         <Route path="/community" element={<Community userId={userId} />} />
         <Route path="/" element={<Feed userId={userId}/>} />
-        <Route path="/profile" element={<div>Profile </div>} />
+        <Route path="/profile" element={<Profile userId={userId}/>} />
         <Route path="/post" element={<Create_post userId={userId}/>} />
         <Route path="/create_community" element={<Create_community userId={userId} />} />
+        <Route path="/admin" element={<Admin userId={userId} />} />
       </Routes>
     </>
   );

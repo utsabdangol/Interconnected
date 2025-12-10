@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Lock, Globe, Clock } from "lucide-react";
 
 interface CommunityProps {
   userId: string | null;
@@ -10,7 +11,8 @@ interface Community {
   category: string;
   com_description: string;
   member_count: number;
-  is_member: number;
+  user_role: string | null;
+  privacy: string;
 }
 
 function Community({ userId }: CommunityProps) {
@@ -65,8 +67,8 @@ function Community({ userId }: CommunityProps) {
       const data = await response.json();
       
       if (data.status === "success") {
-        // Refresh communities to update member status
         fetchCommunities();
+        alert(data.message);
       } else {
         alert(data.message);
       }
@@ -74,6 +76,28 @@ function Community({ userId }: CommunityProps) {
       alert("Failed to join community");
     } finally {
       setJoiningId(null);
+    }
+  };
+
+  const getButtonState = (community: Community) => {
+    if (community.user_role === 'member' || community.user_role === 'creator') {
+      return {
+        text: "Joined",
+        disabled: true,
+        className: "px-4 py-2 bg-slate-600 text-slate-400 rounded-lg cursor-not-allowed"
+      };
+    } else if (community.user_role === 'requesting') {
+      return {
+        text: "Pending",
+        disabled: true,
+        className: "px-4 py-2 bg-yellow-600/50 text-yellow-400 rounded-lg cursor-not-allowed flex items-center gap-2"
+      };
+    } else {
+      return {
+        text: community.privacy === 'private' ? "Request to Join" : "Join",
+        disabled: joiningId === community.id,
+        className: "px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
+      };
     }
   };
 
@@ -106,48 +130,55 @@ function Community({ userId }: CommunityProps) {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {communities.map((community) => (
-              <div
-                key={community.id}
-                className="bg-slate-800/50 backdrop-blur-xl rounded-xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20"
-              >
-                <div className="mb-4">
-                  <h2 className="text-2xl font-bold text-white mb-2">
-                    {community.com_name}
-                  </h2>
-                  <span className="inline-block px-3 py-1 bg-blue-600/30 text-blue-400 rounded-full text-sm font-medium">
-                    {community.category}
-                  </span>
-                </div>
+            {communities.map((community) => {
+              const buttonState = getButtonState(community);
+              
+              return (
+                <div
+                  key={community.id}
+                  className="bg-slate-800/50 backdrop-blur-xl rounded-xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20"
+                >
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h2 className="text-2xl font-bold text-white">
+                        {community.com_name}
+                      </h2>
+                      {community.privacy === 'private' ? (
+                        <div title="Private Community">
+                        <Lock className="w-5 h-5 text-blue-400" />
+                        </div>
+                      ) : (
+                        <div title="Public Community">
+                          <Globe className="w-5 h-5 text-emerald-400" />
+                        </div>
+                      )}
+                    </div>
+                    <span className="inline-block px-3 py-1 bg-blue-600/30 text-blue-400 rounded-full text-sm font-medium">
+                      {community.category}
+                    </span>
+                  </div>
 
-                <p className="text-slate-300 mb-4 line-clamp-3">
-                  {community.com_description}
-                </p>
+                  <p className="text-slate-300 mb-4 line-clamp-3">
+                    {community.com_description}
+                  </p>
 
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-700">
-                  <span className="text-slate-400 text-sm">
-                    {community.member_count} {community.member_count === 1 ? 'member' : 'members'}
-                  </span>
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-700">
+                    <span className="text-slate-400 text-sm">
+                      {community.member_count} {community.member_count === 1 ? 'member' : 'members'}
+                    </span>
 
-                  {community.is_member === 1 ? (
                     <button
-                      disabled
-                      className="px-4 py-2 bg-slate-600 text-slate-400 rounded-lg cursor-not-allowed"
+                      onClick={() => !buttonState.disabled && handleJoin(community.id)}
+                      disabled={buttonState.disabled}
+                      className={buttonState.className}
                     >
-                      Joined
+                      {community.user_role === 'requesting' && <Clock className="w-4 h-4" />}
+                      {joiningId === community.id ? "Processing..." : buttonState.text}
                     </button>
-                  ) : (
-                    <button
-                      onClick={() => handleJoin(community.id)}
-                      disabled={joiningId === community.id}
-                      className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {joiningId === community.id ? "Joining..." : "Join"}
-                    </button>
-                  )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
