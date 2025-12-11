@@ -291,130 +291,143 @@ const handleUpdateReport = async (
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/30 to-slate-900 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <Shield className="w-10 h-10 text-red-400" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
-              Admin Dashboard
-            </h1>
+        <div className="mb-10 animate-fade-in">
+          <div className="flex items-center gap-4 mb-3">
+            <div className="p-3 rounded-xl bg-red-500/20 border border-red-500/30 shadow-lg shadow-red-500/20">
+              <Shield className="w-10 h-10 text-red-400" />
+            </div>
+            <div>
+              <h1 className="text-5xl font-bold text-white mb-2">Admin Dashboard</h1>
+              <p className="text-slate-400 text-lg">Manage users, communities, and content</p>
+            </div>
           </div>
-          <p className="text-slate-400 ml-13">Manage users, communities, and content</p>
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-slate-800/50 backdrop-blur-xl rounded-xl p-6 border border-slate-700/50">
+          <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl rounded-2xl p-6 border border-blue-500/20 shadow-xl shadow-blue-500/10 hover:border-blue-500/40 hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-300">
             <div className="flex items-center gap-4">
-              <Users className="w-12 h-12 text-blue-400" />
+              <div className="p-3 rounded-xl bg-blue-500/20 border border-blue-500/30">
+                <Users className="w-8 h-8 text-blue-400" />
+              </div>
               <div>
-                <p className="text-slate-400 text-sm">Total Users</p>
-                <p className="text-3xl font-bold text-white">{users.length}</p>
+                <p className="text-slate-400 text-sm font-medium mb-1">Total Users</p>
+                <p className="text-4xl font-bold text-white">{users.length}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-slate-800/50 backdrop-blur-xl rounded-xl p-6 border border-slate-700/50">
+          <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl rounded-2xl p-6 border border-emerald-500/20 shadow-xl shadow-emerald-500/10 hover:border-emerald-500/40 hover:shadow-2xl hover:shadow-emerald-500/20 transition-all duration-300">
             <div className="flex items-center gap-4">
-              <Globe className="w-12 h-12 text-emerald-400" />
+              <div className="p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/30">
+                <Globe className="w-8 h-8 text-emerald-400" />
+              </div>
               <div>
-                <p className="text-slate-400 text-sm">Total Communities</p>
-                <p className="text-3xl font-bold text-white">{communities.length}</p>
+                <p className="text-slate-400 text-sm font-medium mb-1">Total Communities</p>
+                <p className="text-4xl font-bold text-white">{communities.length}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-slate-800/50 backdrop-blur-xl rounded-xl p-6 border border-slate-700/50">
+          <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-xl shadow-purple-500/10 hover:border-purple-500/40 hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-300">
             <div className="flex items-center gap-4">
-              <Edit className="w-12 h-12 text-purple-400" />
+              <div className="p-3 rounded-xl bg-purple-500/20 border border-purple-500/30">
+                <Edit className="w-8 h-8 text-purple-400" />
+              </div>
               <div>
-                <p className="text-slate-400 text-sm">Total Posts</p>
-                <p className="text-3xl font-bold text-white">{posts.length}</p>
+                <p className="text-slate-400 text-sm font-medium mb-1">Total Posts</p>
+                <p className="text-4xl font-bold text-white">{posts.length}</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6">
+        <div className="flex flex-wrap gap-3 mb-6 bg-slate-800/30 backdrop-blur-xl rounded-2xl p-2 border border-slate-700/50">
           <button
             onClick={() => setActiveTab("users")}
-            className={`px-6 py-3 rounded-lg font-semibold transition ${
+            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
               activeTab === "users"
-                ? "bg-blue-600 text-white"
-                : "bg-slate-800/50 text-slate-400 hover:bg-slate-700"
+                ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30 scale-105"
+                : "text-slate-400 hover:text-white hover:bg-slate-700/50"
             }`}
           >
             Users
           </button>
           <button
             onClick={() => setActiveTab("communities")}
-            className={`px-6 py-3 rounded-lg font-semibold transition ${
+            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
               activeTab === "communities"
-                ? "bg-emerald-600 text-white"
-                : "bg-slate-800/50 text-slate-400 hover:bg-slate-700"
+                ? "bg-emerald-600 text-white shadow-lg shadow-emerald-500/30 scale-105"
+                : "text-slate-400 hover:text-white hover:bg-slate-700/50"
             }`}
           >
             Communities
           </button>
           <button
             onClick={() => setActiveTab("posts")}
-            className={`px-6 py-3 rounded-lg font-semibold transition ${
+            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
               activeTab === "posts"
-                ? "bg-purple-600 text-white"
-                : "bg-slate-800/50 text-slate-400 hover:bg-slate-700"
+                ? "bg-purple-600 text-white shadow-lg shadow-purple-500/30 scale-105"
+                : "text-slate-400 hover:text-white hover:bg-slate-700/50"
             }`}
           >
             Posts
           </button>
           <button
-          onClick={() => setActiveTab("reports")}
-          className={`px-6 py-3 rounded-lg font-semibold transition ${
-            activeTab === "reports"
-              ? "bg-red-600 text-white"
-              : "bg-slate-800/50 text-slate-400 hover:bg-slate-700"
-          }`}
-        >
-          Reports
-        </button>
-
+            onClick={() => setActiveTab("reports")}
+            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+              activeTab === "reports"
+                ? "bg-red-600 text-white shadow-lg shadow-red-500/30 scale-105"
+                : "text-slate-400 hover:text-white hover:bg-slate-700/50"
+            }`}
+          >
+            Reports
+          </button>
         </div>
 
         {/* Content */}
-        <div className="bg-slate-800/50 backdrop-blur-xl rounded-xl border border-slate-700/50">
+        <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl">
           {/* Users Tab */}
           {activeTab === "users" && (
             <div className="p-6">
-              <h2 className="text-2xl font-bold text-white mb-4">Manage Users</h2>
+              <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+                <Users className="w-8 h-8 text-blue-400" />
+                Manage Users
+              </h2>
               <div className="space-y-3">
-                {users.map((user) => (
+                {users.map((user, index) => (
                   <div
                     key={user.id}
-                    className="flex items-center justify-between p-4 bg-slate-900/50 rounded-lg border border-slate-700"
+                    className="flex items-center justify-between p-5 bg-gradient-to-r from-slate-900/50 to-slate-800/50 rounded-xl border border-slate-700/50 hover:border-blue-500/30 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 animate-fade-in"
+                    style={{ animationDelay: `${index * 0.05}s` }}
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                      <div className="w-14 h-14 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-blue-500/30">
                         {user.username.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <p className="text-white font-semibold">{user.username}</p>
-                        <p className="text-slate-400 text-sm">{user.email}</p>
-                        <p className="text-slate-500 text-xs">
+                        <div className="flex items-center gap-2">
+                          <p className="text-white font-bold text-lg">{user.username}</p>
+                          {user.role_u === "admin" && (
+                            <span className="px-2 py-1 bg-red-600/30 text-red-400 rounded-lg text-xs font-bold border border-red-500/30">
+                              ADMIN
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-slate-400 text-sm mt-1">{user.email}</p>
+                        <p className="text-slate-500 text-xs mt-1">
                           Joined {new Date(user.created_at).toLocaleDateString()}
                         </p>
                       </div>
-                      {user.role_u === "admin" && (
-                        <span className="px-2 py-1 bg-red-600/30 text-red-400 rounded-full text-xs font-semibold">
-                          ADMIN
-                        </span>
-                      )}
                     </div>
                     <button
                       onClick={() => handleDeleteUser(user.id)}
                       disabled={user.role_u === "admin"}
-                      className="p-2 hover:bg-red-600/20 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-3 hover:bg-red-600/20 rounded-xl transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed border border-red-500/20 hover:border-red-500/40"
                     >
                       <UserX className="w-5 h-5 text-red-400" />
                     </button>
@@ -427,32 +440,40 @@ const handleUpdateReport = async (
           {/* Communities Tab */}
           {activeTab === "communities" && (
             <div className="p-6">
-              <h2 className="text-2xl font-bold text-white mb-4">Manage Communities</h2>
+              <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+                <Globe className="w-8 h-8 text-emerald-400" />
+                Manage Communities
+              </h2>
               <div className="space-y-3">
-                {communities.map((community) => (
+                {communities.map((community, index) => (
                   <div
                     key={community.id}
-                    className="flex items-center justify-between p-4 bg-slate-900/50 rounded-lg border border-slate-700"
+                    className="flex items-center justify-between p-5 bg-gradient-to-r from-slate-900/50 to-slate-800/50 rounded-xl border border-slate-700/50 hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300 animate-fade-in"
+                    style={{ animationDelay: `${index * 0.05}s` }}
                   >
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-white font-semibold">{community.com_name}</h3>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="text-white font-bold text-lg">{community.com_name}</h3>
                         {community.privacy === "private" ? (
-                          <Lock className="w-4 h-4 text-blue-400" />
+                          <div className="p-1.5 rounded-lg bg-blue-500/20 border border-blue-500/30">
+                            <Lock className="w-4 h-4 text-blue-400" />
+                          </div>
                         ) : (
-                          <Globe className="w-4 h-4 text-emerald-400" />
+                          <div className="p-1.5 rounded-lg bg-emerald-500/20 border border-emerald-500/30">
+                            <Globe className="w-4 h-4 text-emerald-400" />
+                          </div>
                         )}
                       </div>
-                      <p className="text-slate-400 text-sm">{community.com_description}</p>
-                      <div className="flex gap-4 mt-2 text-xs text-slate-500">
-                        <span>Category: {community.category}</span>
-                        <span>Members: {community.member_count}</span>
-                        <span>Creator: {community.creator_username}</span>
+                      <p className="text-slate-300 text-sm mb-3">{community.com_description}</p>
+                      <div className="flex flex-wrap gap-3 text-xs">
+                        <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-lg border border-blue-500/30">Category: {community.category}</span>
+                        <span className="px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-lg border border-emerald-500/30">{community.member_count} members</span>
+                        <span className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-lg border border-purple-500/30">By: {community.creator_username}</span>
                       </div>
                     </div>
                     <button
                       onClick={() => handleDeleteCommunity(community.id)}
-                      className="p-2 hover:bg-red-600/20 rounded-lg transition"
+                      className="p-3 hover:bg-red-600/20 rounded-xl transition-all duration-300 hover:scale-110 ml-4 border border-red-500/20 hover:border-red-500/40"
                     >
                       <Trash2 className="w-5 h-5 text-red-400" />
                     </button>
@@ -465,24 +486,28 @@ const handleUpdateReport = async (
           {/* Posts Tab */}
           {activeTab === "posts" && (
             <div className="p-6">
-              <h2 className="text-2xl font-bold text-white mb-4">Manage Posts</h2>
+              <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+                <Edit className="w-8 h-8 text-purple-400" />
+                Manage Posts
+              </h2>
               <div className="space-y-3">
-                {posts.map((post) => (
+                {posts.map((post, index) => (
                   <div
                     key={post.id}
-                    className="flex items-center justify-between p-4 bg-slate-900/50 rounded-lg border border-slate-700"
+                    className="flex items-center justify-between p-5 bg-gradient-to-r from-slate-900/50 to-slate-800/50 rounded-xl border border-slate-700/50 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 animate-fade-in"
+                    style={{ animationDelay: `${index * 0.05}s` }}
                   >
-                    <div>
-                      <h3 className="text-white font-semibold">{post.title}</h3>
-                      <div className="flex gap-4 mt-1 text-sm text-slate-400">
-                        <span>By: {post.username}</span>
-                        <span>In: {post.com_name}</span>
-                        <span>{new Date(post.created_at).toLocaleDateString()}</span>
+                    <div className="flex-1">
+                      <h3 className="text-white font-bold text-lg mb-2">{post.title}</h3>
+                      <div className="flex flex-wrap gap-3 text-sm">
+                        <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-lg border border-blue-500/30">By: {post.username}</span>
+                        <span className="px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-lg border border-emerald-500/30">In: {post.com_name}</span>
+                        <span className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-lg border border-purple-500/30">{new Date(post.created_at).toLocaleDateString()}</span>
                       </div>
                     </div>
                     <button
                       onClick={() => handleDeletePost(post.id)}
-                      className="p-2 hover:bg-red-600/20 rounded-lg transition"
+                      className="p-3 hover:bg-red-600/20 rounded-xl transition-all duration-300 hover:scale-110 ml-4 border border-red-500/20 hover:border-red-500/40"
                     >
                       <Trash2 className="w-5 h-5 text-red-400" />
                     </button>
@@ -493,52 +518,58 @@ const handleUpdateReport = async (
           )}
           {activeTab === "reports" && (
           <div className="p-6">
-            <h2 className="text-2xl font-bold text-white mb-4">Manage Reports</h2>
+            <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+              <Shield className="w-8 h-8 text-red-400" />
+              Manage Reports
+            </h2>
 
-            <div className="space-y-3">
-              {reports.map((report) => (
+            <div className="space-y-4">
+              {reports.map((report, index) => (
                 <div
                   key={report.id}
-                  className="p-4 bg-slate-900/50 rounded-lg border border-slate-700"
+                  className="p-5 bg-gradient-to-r from-slate-900/50 to-slate-800/50 rounded-xl border border-slate-700/50 hover:border-red-500/30 hover:shadow-lg hover:shadow-red-500/10 transition-all duration-300 animate-fade-in"
+                  style={{ animationDelay: `${index * 0.05}s` }}
                 >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="text-white font-semibold">
-                        Report #{report.id} — {report.reported_item_type} #{report.reported_item_id}
-                      </p>
-                      <p className="text-slate-400 text-sm">
-                        Reason: {report.reason}
-                      </p>
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="px-3 py-1 bg-red-500/20 text-red-300 rounded-lg border border-red-500/30 font-bold text-sm">Report #{report.id}</span>
+                        <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-lg border border-blue-500/30 text-sm">{report.reported_item_type} #{report.reported_item_id}</span>
+                      </div>
+                      <p className="text-white font-semibold mb-2">Reason: {report.reason}</p>
                       {report.description && (
-                        <p className="text-slate-500 text-sm mt-1">
+                        <p className="text-slate-300 text-sm mb-3 bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
                           {report.description}
                         </p>
                       )}
-
-                      <p className="text-slate-500 text-xs mt-2">
-                        Reporter: {report.reporter_username} <br />
-                        Status: <span className="text-red-300">{report.status}</span>
-                      </p>
+                      <div className="flex flex-wrap gap-2 text-xs">
+                        <span className="px-3 py-1 bg-slate-700/50 text-slate-300 rounded-lg border border-slate-600/50">Reporter: {report.reporter_username}</span>
+                        <span className={`px-3 py-1 rounded-lg border ${
+                          report.status === 'resolved' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' :
+                          report.status === 'under_review' ? 'bg-blue-500/20 text-blue-300 border-blue-500/30' :
+                          'bg-red-500/20 text-red-300 border-red-500/30'
+                        }`}>Status: {report.status}</span>
+                      </div>
                     </div>
 
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 min-w-[140px]">
                       <button
                         onClick={() => handleUpdateReport(report.id, "under_review")}
-                        className="px-3 py-1 bg-blue-600 rounded text-white text-sm"
+                        className="px-4 py-2 bg-blue-600 rounded-xl text-white text-sm font-semibold hover:bg-blue-700 transition-all duration-300 hover:scale-105 shadow-lg shadow-blue-500/20"
                       >
                         Under Review
                       </button>
 
                       <button
                         onClick={() => handleUpdateReport(report.id, "resolved")}
-                        className="px-3 py-1 bg-emerald-600 rounded text-white text-sm"
+                        className="px-4 py-2 bg-emerald-600 rounded-xl text-white text-sm font-semibold hover:bg-emerald-700 transition-all duration-300 hover:scale-105 shadow-lg shadow-emerald-500/20"
                       >
                         Resolve
                       </button>
 
                       <button
                         onClick={() => handleUpdateReport(report.id, "dismissed")}
-                        className="px-3 py-1 bg-red-600 rounded text-white text-sm"
+                        className="px-4 py-2 bg-red-600 rounded-xl text-white text-sm font-semibold hover:bg-red-700 transition-all duration-300 hover:scale-105 shadow-lg shadow-red-500/20"
                       >
                         Dismiss
                       </button>

@@ -206,6 +206,91 @@ else if ($action === 'delete_community' && $_SERVER['REQUEST_METHOD'] === 'DELET
 }
 
 // ============================================
+// GET USER PROFILE BY USER ID
+// ============================================
+else if ($action === 'get_user_profile' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    $target_user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : 0;
+    
+    if ($target_user_id <= 0) {
+        echo json_encode([
+            "status" => "error",
+            "message" => "Invalid user ID"
+        ]);
+        exit();
+    }
+    
+    // Get user basic info
+    $user_sql = "SELECT id, username, email, created_at FROM users WHERE id = ?";
+    $user_stmt = mysqli_prepare($conn, $user_sql);
+    mysqli_stmt_bind_param($user_stmt, "i", $target_user_id);
+    mysqli_stmt_execute($user_stmt);
+    $user_result = mysqli_stmt_get_result($user_stmt);
+    
+    if (mysqli_num_rows($user_result) === 0) {
+        echo json_encode([
+            "status" => "error",
+            "message" => "User not found"
+        ]);
+        exit();
+    }
+    
+    $user_data = mysqli_fetch_assoc($user_result);
+    
+    // Get user's post count
+    $post_count_sql = "SELECT COUNT(*) as post_count FROM posts WHERE user_id = ?";
+    $post_count_stmt = mysqli_prepare($conn, $post_count_sql);
+    mysqli_stmt_bind_param($post_count_stmt, "i", $target_user_id);
+    mysqli_stmt_execute($post_count_stmt);
+    $post_count_result = mysqli_stmt_get_result($post_count_stmt);
+    $post_count_data = mysqli_fetch_assoc($post_count_result);
+    
+    // Get user's community memberships count
+    $community_count_sql = "SELECT COUNT(*) as community_count FROM community_members WHERE user_id = ? AND role != 'requesting'";
+    $community_count_stmt = mysqli_prepare($conn, $community_count_sql);
+    mysqli_stmt_bind_param($community_count_stmt, "i", $target_user_id);
+    mysqli_stmt_execute($community_count_stmt);
+    $community_count_result = mysqli_stmt_get_result($community_count_stmt);
+    $community_count_data = mysqli_fetch_assoc($community_count_result);
+    
+    // Get reports against this user
+    $reports_sql = "SELECT 
+                        r.id,
+                        r.reason,
+                        r.description,
+                        r.status,
+                        r.created_at,
+                        u.username as reporter_username
+                    FROM reports r
+                    INNER JOIN users u ON r.reporter_id = u.id
+                    WHERE r.reported_item_type = 'user' 
+                    AND r.reported_item_id = ?
+                    ORDER BY r.created_at DESC";
+    $reports_stmt = mysqli_prepare($conn, $reports_sql);
+    mysqli_stmt_bind_param($reports_stmt, "i", $target_user_id);
+    mysqli_stmt_execute($reports_stmt);
+    $reports_result = mysqli_stmt_get_result($reports_stmt);
+    
+    $reports = [];
+    while ($row = mysqli_fetch_assoc($reports_result)) {
+        $reports[] = $row;
+    }
+    
+    echo json_encode([
+        "status" => "success",
+        "user" => [
+            "id" => $user_data['id'],
+            "username" => $user_data['username'],
+            "email" => $user_data['email'],
+            "created_at" => $user_data['created_at'],
+            "post_count" => $post_count_data['post_count'],
+            "community_count" => $community_count_data['community_count'],
+            "reports" => $reports,
+            "report_count" => count($reports)
+        ]
+    ]);
+}
+
+// ============================================
 // INVALID ACTION
 // ============================================
 else {

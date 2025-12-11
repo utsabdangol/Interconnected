@@ -55,12 +55,13 @@ const Create_community = ({ userId }: CreateCommunityProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/30 to-slate-900 flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-md">
-        <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-slate-700/50">
-          <h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
-            Create Community
-          </h1>
+        <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-blue-500/20 animate-fade-in">
+          <div className="text-center mb-8">
+            <h1 className="text-5xl font-bold text-white mb-2">Create Community</h1>
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-emerald-500 mx-auto rounded-full"></div>
+          </div>
 
           {error && (
             <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg">
@@ -79,7 +80,7 @@ const Create_community = ({ userId }: CreateCommunityProps) => {
                 required
                 value={input.com_name}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 bg-slate-900/70 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
                 placeholder="Enter community name"
                 maxLength={100}
               />
@@ -95,7 +96,7 @@ const Create_community = ({ userId }: CreateCommunityProps) => {
                 required
                 value={input.category}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 bg-slate-900/70 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
                 placeholder="e.g. Tech, Fitness, Gaming"
                 maxLength={50}
               />
@@ -109,10 +110,10 @@ const Create_community = ({ userId }: CreateCommunityProps) => {
                 <button
                   type="button"
                   onClick={() => setInput({ ...input, privacy: "public" })}
-                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
+                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 transition-all duration-300 ${
                     input.privacy === "public"
-                      ? "border-emerald-500 bg-emerald-500/20 text-emerald-400"
-                      : "border-slate-600 bg-slate-900/50 text-slate-400 hover:border-slate-500"
+                      ? "border-emerald-500 bg-emerald-500/20 text-emerald-300 shadow-lg shadow-emerald-500/20"
+                      : "border-slate-600/50 bg-slate-900/50 text-slate-400 hover:border-slate-500 hover:bg-slate-800/50"
                   }`}
                 >
                   <Globe className="w-5 h-5" />
@@ -122,10 +123,10 @@ const Create_community = ({ userId }: CreateCommunityProps) => {
                 <button
                   type="button"
                   onClick={() => setInput({ ...input, privacy: "private" })}
-                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
+                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 transition-all duration-300 ${
                     input.privacy === "private"
-                      ? "border-blue-500 bg-blue-500/20 text-blue-400"
-                      : "border-slate-600 bg-slate-900/50 text-slate-400 hover:border-slate-500"
+                      ? "border-blue-500 bg-blue-500/20 text-blue-300 shadow-lg shadow-blue-500/20"
+                      : "border-slate-600/50 bg-slate-900/50 text-slate-400 hover:border-slate-500 hover:bg-slate-800/50"
                   }`}
                 >
                   <Lock className="w-5 h-5" />
@@ -149,7 +150,7 @@ const Create_community = ({ userId }: CreateCommunityProps) => {
                 value={input.com_description}
                 onChange={handleChange}
                 rows={5}
-                className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all resize-none"
+                className="w-full px-4 py-3 bg-slate-900/70 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all resize-none"
                 placeholder="Describe your community"
               />
             </div>
@@ -157,7 +158,7 @@ const Create_community = ({ userId }: CreateCommunityProps) => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               {isSubmitting ? "Creating..." : "Create Community"}
             </button>

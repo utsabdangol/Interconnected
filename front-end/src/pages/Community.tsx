@@ -118,61 +118,69 @@ function Community({ userId }: CommunityProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/30 to-slate-900 p-8">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
-          Discover Communities
-        </h1>
+        <div className="text-center mb-10 animate-fade-in">
+          <h1 className="text-5xl font-bold text-white mb-3">Discover Communities</h1>
+          <div className="w-32 h-1 bg-gradient-to-r from-blue-500 to-emerald-500 mx-auto rounded-full"></div>
+        </div>
 
         {communities.length === 0 ? (
-          <div className="text-center text-slate-400 text-xl mt-12">
-            No communities yet. Be the first to create one!
+          <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-xl rounded-2xl p-16 border border-blue-500/20 shadow-2xl shadow-blue-500/10 text-center">
+            <Globe className="w-20 h-20 text-slate-600 mx-auto mb-4" />
+            <p className="text-slate-300 text-xl font-semibold">No communities yet</p>
+            <p className="text-slate-400 mt-2">Be the first to create one!</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {communities.map((community) => {
+            {communities.map((community, index) => {
               const buttonState = getButtonState(community);
               
               return (
                 <div
                   key={community.id}
-                  className="bg-slate-800/50 backdrop-blur-xl rounded-xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20"
+                  className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50 hover:border-blue-500/40 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 animate-fade-in"
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div className="mb-4">
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-2 mb-3">
                       <h2 className="text-2xl font-bold text-white">
                         {community.com_name}
                       </h2>
                       {community.privacy === 'private' ? (
-                        <div title="Private Community">
-                        <Lock className="w-5 h-5 text-blue-400" />
+                        <div className="p-1.5 rounded-lg bg-blue-500/20 border border-blue-500/30" title="Private Community">
+                          <Lock className="w-4 h-4 text-blue-400" />
                         </div>
                       ) : (
-                        <div title="Public Community">
-                          <Globe className="w-5 h-5 text-emerald-400" />
+                        <div className="p-1.5 rounded-lg bg-emerald-500/20 border border-emerald-500/30" title="Public Community">
+                          <Globe className="w-4 h-4 text-emerald-400" />
                         </div>
                       )}
                     </div>
-                    <span className="inline-block px-3 py-1 bg-blue-600/30 text-blue-400 rounded-full text-sm font-medium">
+                    <span className="inline-block px-4 py-1.5 bg-blue-500/20 text-blue-300 rounded-lg text-sm font-semibold border border-blue-500/30">
                       {community.category}
                     </span>
                   </div>
 
-                  <p className="text-slate-300 mb-4 line-clamp-3">
+                  <p className="text-slate-300 mb-5 line-clamp-3 leading-relaxed">
                     {community.com_description}
                   </p>
 
-                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-700">
-                    <span className="text-slate-400 text-sm">
+                  <div className="flex items-center justify-between mt-5 pt-5 border-t border-slate-700/50">
+                    <span className="text-slate-400 text-sm font-medium">
                       {community.member_count} {community.member_count === 1 ? 'member' : 'members'}
                     </span>
 
                     <button
                       onClick={() => !buttonState.disabled && handleJoin(community.id)}
                       disabled={buttonState.disabled}
-                      className={buttonState.className}
+                      className={`px-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
+                        buttonState.disabled
+                          ? buttonState.className
+                          : "bg-emerald-600 text-white hover:bg-emerald-700 hover:scale-105 shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/50"
+                      }`}
                     >
-                      {community.user_role === 'requesting' && <Clock className="w-4 h-4" />}
+                      {community.user_role === 'requesting' && <Clock className="w-4 h-4 inline mr-1" />}
                       {joiningId === community.id ? "Processing..." : buttonState.text}
                     </button>
                   </div>

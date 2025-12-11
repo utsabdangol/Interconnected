@@ -101,12 +101,13 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/30 to-slate-900 flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-md">
-        <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-slate-700/50">
-          <h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
-            Create Account
-          </h1>
+        <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-blue-500/20 animate-fade-in">
+          <div className="text-center mb-8">
+            <h1 className="text-5xl font-bold text-white mb-2">Create Account</h1>
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-emerald-500 mx-auto rounded-full"></div>
+          </div>
 
           {serverError && (
             <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg">
@@ -127,10 +128,10 @@ const Register: React.FC = () => {
                 required
                 value={input.username}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 bg-slate-900/50 border rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 transition-all ${
+                className={`w-full px-4 py-3 bg-slate-900/70 border rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 transition-all ${
                   errors.username
-                    ? "border-red-500 focus:ring-red-500"
-                    : "border-slate-600 focus:ring-emerald-500"
+                    ? "border-red-500/50 focus:ring-red-500/50"
+                    : "border-slate-600/50 focus:ring-emerald-500/50 focus:border-emerald-500/50"
                 }`}
                 placeholder="Choose a username"
               />
@@ -151,10 +152,10 @@ const Register: React.FC = () => {
                 required
                 value={input.email}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 bg-slate-900/50 border rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 transition-all ${
+                className={`w-full px-4 py-3 bg-slate-900/70 border rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 transition-all ${
                   errors.email
-                    ? "border-red-500 focus:ring-red-500"
-                    : "border-slate-600 focus:ring-emerald-500"
+                    ? "border-red-500/50 focus:ring-red-500/50"
+                    : "border-slate-600/50 focus:ring-emerald-500/50 focus:border-emerald-500/50"
                 }`}
                 placeholder="Enter your email"
               />
@@ -175,10 +176,10 @@ const Register: React.FC = () => {
                 required
                 value={input.password}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 bg-slate-900/50 border rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 transition-all ${
+                className={`w-full px-4 py-3 bg-slate-900/70 border rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 transition-all ${
                   errors.password
-                    ? "border-red-500 focus:ring-red-500"
-                    : "border-slate-600 focus:ring-emerald-500"
+                    ? "border-red-500/50 focus:ring-red-500/50"
+                    : "border-slate-600/50 focus:ring-emerald-500/50 focus:border-emerald-500/50"
                 }`}
                 placeholder="Create a password"
               />
@@ -202,10 +203,10 @@ const Register: React.FC = () => {
                 required
                 value={input.confirmPassword}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 bg-slate-900/50 border rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 transition-all ${
+                className={`w-full px-4 py-3 bg-slate-900/70 border rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 transition-all ${
                   errors.confirmPassword
-                    ? "border-red-500 focus:ring-red-500"
-                    : "border-slate-600 focus:ring-emerald-500"
+                    ? "border-red-500/50 focus:ring-red-500/50"
+                    : "border-slate-600/50 focus:ring-emerald-500/50 focus:border-emerald-500/50"
                 }`}
                 placeholder="Confirm your password"
               />
@@ -217,7 +218,7 @@ const Register: React.FC = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               {isSubmitting ? "Creating Account..." : "Register"}
             </button>
@@ -226,7 +227,7 @@ const Register: React.FC = () => {
           <div className="mt-6 text-center">
             <p className="text-slate-400 mb-4">Already have an account?</p>
             <Link to="/login">
-              <button className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/50">
+              <button className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/50 hover:scale-105">
                 Login
               </button>
             </Link>
