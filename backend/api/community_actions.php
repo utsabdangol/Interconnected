@@ -80,7 +80,7 @@ else if ($action === 'create_post' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $image_path = null;
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-        $image_path = "uploads/" . uniqid() . "." . $ext;
+        $image_path = "uploads/posts/" . uniqid() . "." . $ext;
         move_uploaded_file($_FILES['image']['tmp_name'], "../" . $image_path);
     }
 
@@ -99,7 +99,7 @@ else if ($action === 'create_post' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    
+
     $sql = "INSERT INTO posts (community_id, user_id, title, content, image) 
             VALUES (?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $sql);

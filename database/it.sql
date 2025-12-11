@@ -91,3 +91,26 @@ CREATE TABLE comments (
     INDEX idx_comments_created (created_at)
 );
 
+-- Reports Table
+CREATE TABLE reports (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    reporter_id INT NOT NULL,
+    reported_item_type ENUM('post', 'comment', 'user', 'community') NOT NULL,
+    reported_item_id INT NOT NULL,
+    reason VARCHAR(100) NOT NULL,
+    description TEXT,
+    status ENUM('pending', 'under_review', 'resolved', 'dismissed') DEFAULT 'pending',
+    admin_notes TEXT,
+    reviewed_by INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    reviewed_at TIMESTAMP NULL,
+    
+    FOREIGN KEY (reporter_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (reviewed_by) REFERENCES users(id) ON DELETE SET NULL,
+    
+    INDEX idx_reports_status (status),
+    INDEX idx_reports_type (reported_item_type),
+    INDEX idx_reports_reporter (reporter_id),
+    INDEX idx_reports_created (created_at)
+);
+

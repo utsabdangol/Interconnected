@@ -32,8 +32,24 @@ interface Post {
   created_at: string;
 }
 
+interface Report {
+  id: number;
+  reported_item_type: string;
+  reported_item_id: number;
+  reason: string;
+  description: string;
+  status: string;
+  admin_notes: string | null;
+  created_at: string;
+  reviewed_at: string | null;
+  reporter_username: string;
+  reviewed_by_username: string | null;
+}
+
+
 const Admin = ({ userId }: AdminProps) => {
-  const [activeTab, setActiveTab] = useState<"users" | "communities" | "posts">("users");
+  const [activeTab, setActiveTab] = useState<"users" | "communities" | "posts" | "reports">("users");
+  const [reports, setReports] = useState<Report[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [communities, setCommunities] = useState<Community[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -49,6 +65,7 @@ const Admin = ({ userId }: AdminProps) => {
       if (activeTab === "users") fetchUsers();
       else if (activeTab === "communities") fetchCommunities();
       else if (activeTab === "posts") fetchPosts();
+      else if (activeTab === "reports") fetchReports();
     }
   }, [activeTab, isAdmin]);
 
@@ -155,6 +172,57 @@ const Admin = ({ userId }: AdminProps) => {
       console.error("Failed to delete user:", error);
     }
   };
+
+  const fetchReports = async () => {
+  try {
+    const response = await fetch(
+      "http://localhost/Interconnected/backend/api/report_actions.php?action=get_reports",
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+    const data = await response.json();
+    if (data.status === "success") {
+      setReports(data.reports);
+    }
+  } catch (error) {
+    console.error("Failed to fetch reports:", error);
+  }
+};
+
+const handleUpdateReport = async (
+  reportId: number,
+  newStatus: string,
+  notes: string = ""
+) => {
+  try {
+    const response = await fetch(
+      "http://localhost/Interconnected/backend/api/report_actions.php?action=update_report",
+      {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          report_id: reportId,
+          status: newStatus,
+          admin_notes: notes
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.status === "success") {
+      fetchReports(); // refresh list
+    } else {
+      alert(data.message);
+    }
+  } catch (error) {
+    console.error("Failed to update report:", error);
+  }
+};
+
 
   const handleDeleteCommunity = async (communityId: number) => {
     if (!confirm("Are you sure you want to delete this community? All posts and members will be removed.")) {
@@ -301,6 +369,17 @@ const Admin = ({ userId }: AdminProps) => {
           >
             Posts
           </button>
+          <button
+          onClick={() => setActiveTab("reports")}
+          className={`px-6 py-3 rounded-lg font-semibold transition ${
+            activeTab === "reports"
+              ? "bg-red-600 text-white"
+              : "bg-slate-800/50 text-slate-400 hover:bg-slate-700"
+          }`}
+        >
+          Reports
+        </button>
+
         </div>
 
         {/* Content */}
@@ -412,6 +491,65 @@ const Admin = ({ userId }: AdminProps) => {
               </div>
             </div>
           )}
+          {activeTab === "reports" && (
+          <div className="p-6">
+            <h2 className="text-2xl font-bold text-white mb-4">Manage Reports</h2>
+
+            <div className="space-y-3">
+              {reports.map((report) => (
+                <div
+                  key={report.id}
+                  className="p-4 bg-slate-900/50 rounded-lg border border-slate-700"
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-white font-semibold">
+                        Report #{report.id} — {report.reported_item_type} #{report.reported_item_id}
+                      </p>
+                      <p className="text-slate-400 text-sm">
+                        Reason: {report.reason}
+                      </p>
+                      {report.description && (
+                        <p className="text-slate-500 text-sm mt-1">
+                          {report.description}
+                        </p>
+                      )}
+
+                      <p className="text-slate-500 text-xs mt-2">
+                        Reporter: {report.reporter_username} <br />
+                        Status: <span className="text-red-300">{report.status}</span>
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      <button
+                        onClick={() => handleUpdateReport(report.id, "under_review")}
+                        className="px-3 py-1 bg-blue-600 rounded text-white text-sm"
+                      >
+                        Under Review
+                      </button>
+
+                      <button
+                        onClick={() => handleUpdateReport(report.id, "resolved")}
+                        className="px-3 py-1 bg-emerald-600 rounded text-white text-sm"
+                      >
+                        Resolve
+                      </button>
+
+                      <button
+                        onClick={() => handleUpdateReport(report.id, "dismissed")}
+                        className="px-3 py-1 bg-red-600 rounded text-white text-sm"
+                      >
+                        Dismiss
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Heart, MessageCircle, MoreVertical, Trash2, Edit } from "lucide-react";
+import ReportButton from "./ReportButton";
 
 interface PostProps {
   post: {
@@ -177,7 +178,23 @@ const Post = ({ post, currentUserId, onUpdate }: PostProps) => {
             <p className="text-slate-400 text-sm">{post.com_name}</p>
           </div>
         </div>
+        <div className="flex items-start justify-between mb-4">
+  <div className="flex items-center gap-3">
+    {/* ... existing profile picture and username ... */}
+  </div>
 
+  <div className="flex gap-2">
+    {!isOwner && (
+      <ReportButton itemType="post" itemId={post.id} />
+    )}
+    
+    {isOwner && (
+      <button onClick={() => setShowMenu(!showMenu)}>
+        <MoreVertical className="w-5 h-5 text-slate-400" />
+      </button>
+    )}
+  </div>
+</div>
         {isOwner && (
           <div className="relative">
             <button
