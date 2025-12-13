@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import { Lock, Globe, Clock } from "lucide-react";
 
-interface CommunityProps {
-  userId: string | null;
-}
-
-interface Community {
+interface CommunityData {
   id: number;
   com_name: string;
   category: string;
@@ -15,8 +11,10 @@ interface Community {
   privacy: string;
 }
 
-function Community({ userId }: CommunityProps) {
-  const [communities, setCommunities] = useState<Community[]>([]);
+// interface CommunityProps {}
+
+function Community() {
+  const [communities, setCommunities] = useState<CommunityData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [joiningId, setJoiningId] = useState<number | null>(null);
@@ -35,7 +33,7 @@ function Community({ userId }: CommunityProps) {
         }
       );
       const data = await response.json();
-      
+
       if (data.status === "success") {
         setCommunities(data.communities);
       } else {
@@ -50,7 +48,7 @@ function Community({ userId }: CommunityProps) {
 
   const handleJoin = async (communityId: number) => {
     setJoiningId(communityId);
-    
+
     try {
       const response = await fetch(
         "http://localhost/Interconnected/backend/api/join_community.php",
@@ -63,9 +61,9 @@ function Community({ userId }: CommunityProps) {
           body: JSON.stringify({ community_id: communityId })
         }
       );
-      
+
       const data = await response.json();
-      
+
       if (data.status === "success") {
         fetchCommunities();
         alert(data.message);
@@ -79,7 +77,7 @@ function Community({ userId }: CommunityProps) {
     }
   };
 
-  const getButtonState = (community: Community) => {
+  const getButtonState = (community: CommunityData) => {
     if (community.user_role === 'member' || community.user_role === 'creator') {
       return {
         text: "Joined",
@@ -135,7 +133,7 @@ function Community({ userId }: CommunityProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {communities.map((community, index) => {
               const buttonState = getButtonState(community);
-              
+
               return (
                 <div
                   key={community.id}
@@ -174,11 +172,10 @@ function Community({ userId }: CommunityProps) {
                     <button
                       onClick={() => !buttonState.disabled && handleJoin(community.id)}
                       disabled={buttonState.disabled}
-                      className={`px-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
-                        buttonState.disabled
-                          ? buttonState.className
-                          : "bg-emerald-600 text-white hover:bg-emerald-700 hover:scale-105 shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/50"
-                      }`}
+                      className={`px-4 py-2 rounded-xl font-semibold transition-all duration-300 ${buttonState.disabled
+                        ? buttonState.className
+                        : "bg-emerald-600 text-white hover:bg-emerald-700 hover:scale-105 shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/50"
+                        }`}
                     >
                       {community.user_role === 'requesting' && <Clock className="w-4 h-4 inline mr-1" />}
                       {joiningId === community.id ? "Processing..." : buttonState.text}

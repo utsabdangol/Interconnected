@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import { Users, Shield, Trash2, Edit, Lock, Globe, UserX } from "lucide-react";
 
-interface AdminProps {
-  userId: string | null;
-}
-
 interface User {
   id: number;
   username: string;
@@ -46,8 +42,7 @@ interface Report {
   reviewed_by_username: string | null;
 }
 
-
-const Admin = ({ userId }: AdminProps) => {
+const Admin = () => {
   const [activeTab, setActiveTab] = useState<"users" | "communities" | "posts" | "reports">("users");
   const [reports, setReports] = useState<Report[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -79,7 +74,7 @@ const Admin = ({ userId }: AdminProps) => {
         }
       );
       const data = await response.json();
-      
+
       if (data.logged_in && data.user.role_u === "admin") {
         setIsAdmin(true);
       } else {
@@ -162,7 +157,7 @@ const Admin = ({ userId }: AdminProps) => {
         }
       );
       const data = await response.json();
-      
+
       if (data.status === "success") {
         fetchUsers();
       } else {
@@ -174,54 +169,54 @@ const Admin = ({ userId }: AdminProps) => {
   };
 
   const fetchReports = async () => {
-  try {
-    const response = await fetch(
-      "http://localhost/Interconnected/backend/api/report_actions.php?action=get_reports",
-      {
-        method: "GET",
-        credentials: "include",
+    try {
+      const response = await fetch(
+        "http://localhost/Interconnected/backend/api/report_actions.php?action=get_reports",
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      const data = await response.json();
+      if (data.status === "success") {
+        setReports(data.reports);
       }
-    );
-    const data = await response.json();
-    if (data.status === "success") {
-      setReports(data.reports);
+    } catch (error) {
+      console.error("Failed to fetch reports:", error);
     }
-  } catch (error) {
-    console.error("Failed to fetch reports:", error);
-  }
-};
+  };
 
-const handleUpdateReport = async (
-  reportId: number,
-  newStatus: string,
-  notes: string = ""
-) => {
-  try {
-    const response = await fetch(
-      "http://localhost/Interconnected/backend/api/report_actions.php?action=update_report",
-      {
-        method: "PUT",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          report_id: reportId,
-          status: newStatus,
-          admin_notes: notes
-        }),
+  const handleUpdateReport = async (
+    reportId: number,
+    newStatus: string,
+    notes: string = ""
+  ) => {
+    try {
+      const response = await fetch(
+        "http://localhost/Interconnected/backend/api/report_actions.php?action=update_report",
+        {
+          method: "PUT",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            report_id: reportId,
+            status: newStatus,
+            admin_notes: notes
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.status === "success") {
+        fetchReports(); // refresh list
+      } else {
+        alert(data.message);
       }
-    );
-
-    const data = await response.json();
-
-    if (data.status === "success") {
-      fetchReports(); // refresh list
-    } else {
-      alert(data.message);
+    } catch (error) {
+      console.error("Failed to update report:", error);
     }
-  } catch (error) {
-    console.error("Failed to update report:", error);
-  }
-};
+  };
 
 
   const handleDeleteCommunity = async (communityId: number) => {
@@ -240,7 +235,7 @@ const handleUpdateReport = async (
         }
       );
       const data = await response.json();
-      
+
       if (data.status === "success") {
         fetchCommunities();
       } else {
@@ -267,7 +262,7 @@ const handleUpdateReport = async (
         }
       );
       const data = await response.json();
-      
+
       if (data.status === "success") {
         fetchPosts();
       } else {
@@ -349,41 +344,37 @@ const handleUpdateReport = async (
         <div className="flex flex-wrap gap-3 mb-6 bg-slate-800/30 backdrop-blur-xl rounded-2xl p-2 border border-slate-700/50">
           <button
             onClick={() => setActiveTab("users")}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
-              activeTab === "users"
-                ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30 scale-105"
-                : "text-slate-400 hover:text-white hover:bg-slate-700/50"
-            }`}
+            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${activeTab === "users"
+              ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30 scale-105"
+              : "text-slate-400 hover:text-white hover:bg-slate-700/50"
+              }`}
           >
             Users
           </button>
           <button
             onClick={() => setActiveTab("communities")}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
-              activeTab === "communities"
-                ? "bg-emerald-600 text-white shadow-lg shadow-emerald-500/30 scale-105"
-                : "text-slate-400 hover:text-white hover:bg-slate-700/50"
-            }`}
+            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${activeTab === "communities"
+              ? "bg-emerald-600 text-white shadow-lg shadow-emerald-500/30 scale-105"
+              : "text-slate-400 hover:text-white hover:bg-slate-700/50"
+              }`}
           >
             Communities
           </button>
           <button
             onClick={() => setActiveTab("posts")}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
-              activeTab === "posts"
-                ? "bg-purple-600 text-white shadow-lg shadow-purple-500/30 scale-105"
-                : "text-slate-400 hover:text-white hover:bg-slate-700/50"
-            }`}
+            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${activeTab === "posts"
+              ? "bg-purple-600 text-white shadow-lg shadow-purple-500/30 scale-105"
+              : "text-slate-400 hover:text-white hover:bg-slate-700/50"
+              }`}
           >
             Posts
           </button>
           <button
             onClick={() => setActiveTab("reports")}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
-              activeTab === "reports"
-                ? "bg-red-600 text-white shadow-lg shadow-red-500/30 scale-105"
-                : "text-slate-400 hover:text-white hover:bg-slate-700/50"
-            }`}
+            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${activeTab === "reports"
+              ? "bg-red-600 text-white shadow-lg shadow-red-500/30 scale-105"
+              : "text-slate-400 hover:text-white hover:bg-slate-700/50"
+              }`}
           >
             Reports
           </button>
@@ -517,69 +508,68 @@ const handleUpdateReport = async (
             </div>
           )}
           {activeTab === "reports" && (
-          <div className="p-6">
-            <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-              <Shield className="w-8 h-8 text-red-400" />
-              Manage Reports
-            </h2>
+            <div className="p-6">
+              <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+                <Shield className="w-8 h-8 text-red-400" />
+                Manage Reports
+              </h2>
 
-            <div className="space-y-4">
-              {reports.map((report, index) => (
-                <div
-                  key={report.id}
-                  className="p-5 bg-gradient-to-r from-slate-900/50 to-slate-800/50 rounded-xl border border-slate-700/50 hover:border-red-500/30 hover:shadow-lg hover:shadow-red-500/10 transition-all duration-300 animate-fade-in"
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                >
-                  <div className="flex justify-between items-start gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="px-3 py-1 bg-red-500/20 text-red-300 rounded-lg border border-red-500/30 font-bold text-sm">Report #{report.id}</span>
-                        <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-lg border border-blue-500/30 text-sm">{report.reported_item_type} #{report.reported_item_id}</span>
+              <div className="space-y-4">
+                {reports.map((report, index) => (
+                  <div
+                    key={report.id}
+                    className="p-5 bg-gradient-to-r from-slate-900/50 to-slate-800/50 rounded-xl border border-slate-700/50 hover:border-red-500/30 hover:shadow-lg hover:shadow-red-500/10 transition-all duration-300 animate-fade-in"
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                  >
+                    <div className="flex justify-between items-start gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="px-3 py-1 bg-red-500/20 text-red-300 rounded-lg border border-red-500/30 font-bold text-sm">Report #{report.id}</span>
+                          <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-lg border border-blue-500/30 text-sm">{report.reported_item_type} #{report.reported_item_id}</span>
+                        </div>
+                        <p className="text-white font-semibold mb-2">Reason: {report.reason}</p>
+                        {report.description && (
+                          <p className="text-slate-300 text-sm mb-3 bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
+                            {report.description}
+                          </p>
+                        )}
+                        <div className="flex flex-wrap gap-2 text-xs">
+                          <span className="px-3 py-1 bg-slate-700/50 text-slate-300 rounded-lg border border-slate-600/50">Reporter: {report.reporter_username}</span>
+                          <span className={`px-3 py-1 rounded-lg border ${report.status === 'resolved' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' :
+                            report.status === 'under_review' ? 'bg-blue-500/20 text-blue-300 border-blue-500/30' :
+                              'bg-red-500/20 text-red-300 border-red-500/30'
+                            }`}>Status: {report.status}</span>
+                        </div>
                       </div>
-                      <p className="text-white font-semibold mb-2">Reason: {report.reason}</p>
-                      {report.description && (
-                        <p className="text-slate-300 text-sm mb-3 bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
-                          {report.description}
-                        </p>
-                      )}
-                      <div className="flex flex-wrap gap-2 text-xs">
-                        <span className="px-3 py-1 bg-slate-700/50 text-slate-300 rounded-lg border border-slate-600/50">Reporter: {report.reporter_username}</span>
-                        <span className={`px-3 py-1 rounded-lg border ${
-                          report.status === 'resolved' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' :
-                          report.status === 'under_review' ? 'bg-blue-500/20 text-blue-300 border-blue-500/30' :
-                          'bg-red-500/20 text-red-300 border-red-500/30'
-                        }`}>Status: {report.status}</span>
+
+                      <div className="flex flex-col gap-2 min-w-[140px]">
+                        <button
+                          onClick={() => handleUpdateReport(report.id, "under_review")}
+                          className="px-4 py-2 bg-blue-600 rounded-xl text-white text-sm font-semibold hover:bg-blue-700 transition-all duration-300 hover:scale-105 shadow-lg shadow-blue-500/20"
+                        >
+                          Under Review
+                        </button>
+
+                        <button
+                          onClick={() => handleUpdateReport(report.id, "resolved")}
+                          className="px-4 py-2 bg-emerald-600 rounded-xl text-white text-sm font-semibold hover:bg-emerald-700 transition-all duration-300 hover:scale-105 shadow-lg shadow-emerald-500/20"
+                        >
+                          Resolve
+                        </button>
+
+                        <button
+                          onClick={() => handleUpdateReport(report.id, "dismissed")}
+                          className="px-4 py-2 bg-red-600 rounded-xl text-white text-sm font-semibold hover:bg-red-700 transition-all duration-300 hover:scale-105 shadow-lg shadow-red-500/20"
+                        >
+                          Dismiss
+                        </button>
                       </div>
-                    </div>
-
-                    <div className="flex flex-col gap-2 min-w-[140px]">
-                      <button
-                        onClick={() => handleUpdateReport(report.id, "under_review")}
-                        className="px-4 py-2 bg-blue-600 rounded-xl text-white text-sm font-semibold hover:bg-blue-700 transition-all duration-300 hover:scale-105 shadow-lg shadow-blue-500/20"
-                      >
-                        Under Review
-                      </button>
-
-                      <button
-                        onClick={() => handleUpdateReport(report.id, "resolved")}
-                        className="px-4 py-2 bg-emerald-600 rounded-xl text-white text-sm font-semibold hover:bg-emerald-700 transition-all duration-300 hover:scale-105 shadow-lg shadow-emerald-500/20"
-                      >
-                        Resolve
-                      </button>
-
-                      <button
-                        onClick={() => handleUpdateReport(report.id, "dismissed")}
-                        className="px-4 py-2 bg-red-600 rounded-xl text-white text-sm font-semibold hover:bg-red-700 transition-all duration-300 hover:scale-105 shadow-lg shadow-red-500/20"
-                      >
-                        Dismiss
-                      </button>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         </div>
       </div>

@@ -4,7 +4,7 @@ import { Rss } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface FeedProps {
-  userId: string | null;
+  userId?: string | null;
   communityId?: number;
 }
 
@@ -14,7 +14,7 @@ interface Community {
   category: string;
 }
 
-const Feed = ({ userId, communityId }: FeedProps) => {
+const Feed = ({ userId }: FeedProps) => {
   const [posts, setPosts] = useState<any[]>([]);
   const [communities, setCommunities] = useState<Community[]>([]);
   const [selectedCommunityId, setSelectedCommunityId] = useState<number | null>(null);
@@ -141,7 +141,7 @@ const Feed = ({ userId, communityId }: FeedProps) => {
                       <div key={post.id} className="animate-fade-in">
                         <Post
                           post={post}
-                          currentUserId={userId}
+                          currentUserId={userId || null} // Pass null if userId is undefined
                           onUpdate={fetchPosts}
                         />
                       </div>
@@ -171,11 +171,10 @@ const Feed = ({ userId, communityId }: FeedProps) => {
                 <div className="flex flex-col gap-2">
                   <button
                     onClick={() => setSelectedCommunityId(null)}
-                    className={`w-full px-4 py-3 rounded-xl font-semibold transition-all duration-300 text-left ${
-                      selectedCommunityId === null
-                        ? "bg-gradient-to-r from-blue-600 to-emerald-600 text-white shadow-lg shadow-blue-500/30 scale-105"
-                        : "bg-slate-700/50 text-slate-300 hover:bg-slate-700 hover:scale-105 border border-slate-600/50"
-                    }`}
+                    className={`w-full px-4 py-3 rounded-xl font-semibold transition-all duration-300 text-left ${selectedCommunityId === null
+                      ? "bg-gradient-to-r from-blue-600 to-emerald-600 text-white shadow-lg shadow-blue-500/30 scale-105"
+                      : "bg-slate-700/50 text-slate-300 hover:bg-slate-700 hover:scale-105 border border-slate-600/50"
+                      }`}
                   >
                     All Communities
                   </button>
@@ -183,11 +182,10 @@ const Feed = ({ userId, communityId }: FeedProps) => {
                     <button
                       key={community.id}
                       onClick={() => setSelectedCommunityId(community.id)}
-                      className={`w-full px-4 py-3 rounded-xl font-semibold transition-all duration-300 text-left ${
-                        selectedCommunityId === community.id
-                          ? "bg-gradient-to-r from-blue-600 to-emerald-600 text-white shadow-lg shadow-blue-500/30 scale-105"
-                          : "bg-slate-700/50 text-slate-300 hover:bg-slate-700 hover:scale-105 border border-slate-600/50"
-                      }`}
+                      className={`w-full px-4 py-3 rounded-xl font-semibold transition-all duration-300 text-left ${selectedCommunityId === community.id
+                        ? "bg-gradient-to-r from-blue-600 to-emerald-600 text-white shadow-lg shadow-blue-500/30 scale-105"
+                        : "bg-slate-700/50 text-slate-300 hover:bg-slate-700 hover:scale-105 border border-slate-600/50"
+                        }`}
                     >
                       {community.com_name}
                     </button>

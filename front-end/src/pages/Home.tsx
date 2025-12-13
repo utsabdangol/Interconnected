@@ -42,7 +42,7 @@ function Home() {
         {/* Left section: Logo + Nav Links */}
         <div className="flex items-center space-x-6">
           <div className="flex items-center gap-3">
-            <img 
+            <img
               src={logo}
               alt="Logo"
               className="w-12 h-12 rounded-full border-2 border-blue-400/50 shadow-lg shadow-blue-500/30 hover:scale-110 transition-transform duration-300"
@@ -52,39 +52,39 @@ function Home() {
             </span>
           </div>
           <div className="flex items-center gap-1">
-            <Link 
-              to="/home" 
+            <Link
+              to="/home"
               className="px-4 py-2 rounded-lg hover:bg-blue-500/20 hover:text-blue-300 transition-all duration-300 font-medium"
             >
               Home
             </Link>
-            <Link 
-              to="/home/community" 
+            <Link
+              to="/home/community"
               className="px-4 py-2 rounded-lg hover:bg-emerald-500/20 hover:text-emerald-300 transition-all duration-300 font-medium"
             >
               Community
             </Link>
-            <Link 
-              to="/home/profile" 
+            <Link
+              to="/home/profile"
               className="px-4 py-2 rounded-lg hover:bg-blue-500/20 hover:text-blue-300 transition-all duration-300 font-medium"
             >
               Profile
             </Link>
-            <Link 
-              to="/home/post" 
+            <Link
+              to="/home/post"
               className="px-4 py-2 rounded-lg hover:bg-emerald-500/20 hover:text-emerald-300 transition-all duration-300 font-medium"
             >
               Post
             </Link>
-            <Link 
-              to="/home/create_community" 
+            <Link
+              to="/home/create_community"
               className="px-4 py-2 rounded-lg hover:bg-blue-500/20 hover:text-blue-300 transition-all duration-300 font-medium"
             >
               Create Community
             </Link>
             {isAdmin && (
-              <Link 
-                to="/home/admin" 
+              <Link
+                to="/home/admin"
                 className="px-4 py-2 rounded-lg hover:bg-red-500/20 hover:text-red-300 transition-all duration-300 font-medium border border-red-500/30"
               >
                 Admin
@@ -92,7 +92,7 @@ function Home() {
             )}
           </div>
         </div>
-        
+
         {/* Right section: Welcome + Logout */}
         <div className="flex items-center space-x-4">
           <div className="hidden md:block px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500/20 to-emerald-500/20 border border-blue-500/30">
@@ -103,14 +103,14 @@ function Home() {
           <LogoutButton />
         </div>
       </nav>
-      
+
       <Routes>
-        <Route path="/community" element={<Community userId={userId} />} />
-        <Route path="/" element={<Feed userId={userId}/>} />
-        <Route path="/profile" element={<Profile userId={userId}/>} />
-        <Route path="/post" element={<Create_post userId={userId}/>} />
-        <Route path="/create_community" element={<Create_community userId={userId} />} />
-        <Route path="/admin" element={<Admin userId={userId} />} />
+        <Route path="/community" element={<Community />} />
+        <Route path="/" element={<Feed userId={userId} />} />
+        <Route path="/profile" element={<Profile userId={userId} />} />
+        <Route path="/post" element={<Create_post />} />
+        <Route path="/create_community" element={<Create_community />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </>
   );

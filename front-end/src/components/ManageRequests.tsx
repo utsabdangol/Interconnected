@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import { Check, X, Clock, User, XCircle } from "lucide-react";
 
-interface ManageRequestsProps {
-  userId: string | null;
-}
-
 interface Request {
   request_id: number;
   community_id: number;
@@ -34,7 +30,7 @@ interface UserProfile {
   report_count: number;
 }
 
-const ManageRequests = ({ userId }: ManageRequestsProps) => {
+const ManageRequests = () => {
   const [requests, setRequests] = useState<Request[]>([]);
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState<number | null>(null);
@@ -56,7 +52,7 @@ const ManageRequests = ({ userId }: ManageRequestsProps) => {
         }
       );
       const data = await response.json();
-      
+
       if (data.status === "success") {
         setRequests(data.requests);
       }
@@ -69,7 +65,7 @@ const ManageRequests = ({ userId }: ManageRequestsProps) => {
 
   const handleApprove = async (requestId: number) => {
     setProcessingId(requestId);
-    
+
     try {
       const response = await fetch(
         "http://localhost/Interconnected/backend/api/community_requests.php?action=approve_request",
@@ -81,7 +77,7 @@ const ManageRequests = ({ userId }: ManageRequestsProps) => {
         }
       );
       const data = await response.json();
-      
+
       if (data.status === "success") {
         fetchRequests();
       } else {
@@ -96,9 +92,9 @@ const ManageRequests = ({ userId }: ManageRequestsProps) => {
 
   const handleReject = async (requestId: number) => {
     if (!confirm("Are you sure you want to reject this request?")) return;
-    
+
     setProcessingId(requestId);
-    
+
     try {
       const response = await fetch(
         "http://localhost/Interconnected/backend/api/community_requests.php?action=reject_request",
@@ -110,7 +106,7 @@ const ManageRequests = ({ userId }: ManageRequestsProps) => {
         }
       );
       const data = await response.json();
-      
+
       if (data.status === "success") {
         fetchRequests();
       } else {
@@ -127,7 +123,7 @@ const ManageRequests = ({ userId }: ManageRequestsProps) => {
     setViewingProfile(userId);
     setLoadingProfile(true);
     setUserProfile(null);
-    
+
     try {
       const response = await fetch(
         `http://localhost/Interconnected/backend/api/profile_actions.php?action=get_user_profile&user_id=${userId}`,
@@ -137,7 +133,7 @@ const ManageRequests = ({ userId }: ManageRequestsProps) => {
         }
       );
       const data = await response.json();
-      
+
       if (data.status === "success") {
         setUserProfile(data.user);
       } else {
@@ -321,13 +317,12 @@ const ManageRequests = ({ userId }: ManageRequestsProps) => {
                                   <span className="text-slate-400">
                                     By: {report.reporter_username}
                                   </span>
-                                  <span className={`px-2 py-0.5 rounded-lg ${
-                                    report.status === 'resolved' 
-                                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                                      : report.status === 'under_review'
+                                  <span className={`px-2 py-0.5 rounded-lg ${report.status === 'resolved'
+                                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                    : report.status === 'under_review'
                                       ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                                       : 'bg-red-500/20 text-red-300 border border-red-500/30'
-                                  }`}>
+                                    }`}>
                                     {report.status}
                                   </span>
                                 </div>

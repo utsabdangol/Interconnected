@@ -2,17 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-interface CreatePostProps {
-  userId: string | null;
-}
-
 interface UserCommunity {
   id: number;
   com_name: string;
   category: string;
 }
 
-const CreatePost = ({ userId }: CreatePostProps) => {
+const CreatePost = () => {
   const navigate = useNavigate();
   const [communities, setCommunities] = useState<UserCommunity[]>([]);
   const [loading, setLoading] = useState(true);
@@ -72,7 +68,7 @@ const CreatePost = ({ userId }: CreatePostProps) => {
         setError("Please select an image file");
         return;
       }
-      
+
       // Validate file size (5MB)
       if (file.size > 5 * 1024 * 1024) {
         setError("Image must be less than 5MB");
@@ -80,7 +76,7 @@ const CreatePost = ({ userId }: CreatePostProps) => {
       }
 
       setImageFile(file);
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -100,7 +96,7 @@ const CreatePost = ({ userId }: CreatePostProps) => {
       formData.append("community_id", input.community_id);
       formData.append("title", input.title);
       formData.append("content", input.content);
-      
+
       if (imageFile) {
         formData.append("image", imageFile);
       }

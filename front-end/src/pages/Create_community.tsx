@@ -2,11 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Lock, Globe } from "lucide-react";
 
-interface CreateCommunityProps {
-  userId: string | null;
-}
-
-const Create_community = ({ userId }: CreateCommunityProps) => {
+const Create_community = () => {
   const navigate = useNavigate();
   const [input, setInput] = useState({
     com_name: "",
@@ -110,11 +106,10 @@ const Create_community = ({ userId }: CreateCommunityProps) => {
                 <button
                   type="button"
                   onClick={() => setInput({ ...input, privacy: "public" })}
-                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 transition-all duration-300 ${
-                    input.privacy === "public"
-                      ? "border-emerald-500 bg-emerald-500/20 text-emerald-300 shadow-lg shadow-emerald-500/20"
-                      : "border-slate-600/50 bg-slate-900/50 text-slate-400 hover:border-slate-500 hover:bg-slate-800/50"
-                  }`}
+                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 transition-all duration-300 ${input.privacy === "public"
+                    ? "border-emerald-500 bg-emerald-500/20 text-emerald-300 shadow-lg shadow-emerald-500/20"
+                    : "border-slate-600/50 bg-slate-900/50 text-slate-400 hover:border-slate-500 hover:bg-slate-800/50"
+                    }`}
                 >
                   <Globe className="w-5 h-5" />
                   <span className="font-medium">Public</span>
@@ -123,11 +118,10 @@ const Create_community = ({ userId }: CreateCommunityProps) => {
                 <button
                   type="button"
                   onClick={() => setInput({ ...input, privacy: "private" })}
-                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 transition-all duration-300 ${
-                    input.privacy === "private"
-                      ? "border-blue-500 bg-blue-500/20 text-blue-300 shadow-lg shadow-blue-500/20"
-                      : "border-slate-600/50 bg-slate-900/50 text-slate-400 hover:border-slate-500 hover:bg-slate-800/50"
-                  }`}
+                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 transition-all duration-300 ${input.privacy === "private"
+                    ? "border-blue-500 bg-blue-500/20 text-blue-300 shadow-lg shadow-blue-500/20"
+                    : "border-slate-600/50 bg-slate-900/50 text-slate-400 hover:border-slate-500 hover:bg-slate-800/50"
+                    }`}
                 >
                   <Lock className="w-5 h-5" />
                   <span className="font-medium">Private</span>

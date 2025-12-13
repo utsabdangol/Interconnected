@@ -4,7 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import LandingPage from './pages/Landingpage';
 import Home from './pages/Home';
-import Create_community from './pages/create_community';
+import Create_community from './pages/Create_community';
 
 function App() {
   return (
