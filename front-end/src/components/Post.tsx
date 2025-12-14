@@ -31,7 +31,8 @@ const Post = ({ post, currentUserId, onUpdate }: PostProps) => {
   const [editTitle, setEditTitle] = useState(post.title);
   const [editContent, setEditContent] = useState(post.content);
 
-  const isOwner = currentUserId === post.user_id.toString();
+  // Ensure both IDs are compared as strings to handle potential type mismatches
+  const isOwner = currentUserId !== null && String(currentUserId) === String(post.user_id);
 
   const handleLike = async () => {
     try {
@@ -188,53 +189,44 @@ const Post = ({ post, currentUserId, onUpdate }: PostProps) => {
             </p>
           </div>
         </div>
-        <div className="flex items-start justify-between mb-4">
-  <div className="flex items-center gap-3">
-    {/* ... existing profile picture and username ... */}
-  </div>
+        <div className="flex gap-2">
+          {!isOwner && (
+            <ReportButton itemType="post" itemId={post.id} />
+          )}
 
-  <div className="flex gap-2">
-    {!isOwner && (
-      <ReportButton itemType="post" itemId={post.id} />
-    )}
-    
-    {isOwner && (
-      <button onClick={() => setShowMenu(!showMenu)}>
-        <MoreVertical className="w-5 h-5 text-slate-400" />
-      </button>
-    )}
-  </div>
-</div>
-        {isOwner && (
-          <div className="relative">
-            <button
-              onClick={() => setShowMenu(!showMenu)}
-              className="p-2 hover:bg-slate-700 rounded-lg transition"
-            >
-              <MoreVertical className="w-5 h-5 text-slate-400" />
-            </button>
+          {isOwner && (
+            <div className="relative">
+              <button
+                onClick={() => setShowMenu(!showMenu)}
+                className="p-2 hover:bg-slate-700/50 rounded-lg transition-colors duration-200"
+              >
+                <MoreVertical className="w-5 h-5 text-slate-400 hover:text-white" />
+              </button>
 
-            {showMenu && (
-              <div className="absolute right-0 mt-2 w-40 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl shadow-2xl shadow-blue-500/20 py-2 z-10 border border-blue-500/20 animate-scale-in">
-                <button
-                  onClick={() => {
-                    setIsEditing(true);
-                    setShowMenu(false);
-                  }}
-                  className="w-full px-4 py-2 text-left text-white hover:bg-blue-500/20 flex items-center gap-2 transition-all duration-300"
-                >
-                  <Edit className="w-4 h-4" /> Edit
-                </button>
-                <button
-                  onClick={handleDelete}
-                  className="w-full px-4 py-2 text-left text-red-400 hover:bg-red-500/20 flex items-center gap-2 transition-all duration-300"
-                >
-                  <Trash2 className="w-4 h-4" /> Delete
-                </button>
-              </div>
-            )}
-          </div>
-        )}
+              {showMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-xl shadow-xl shadow-black/50 py-1 z-10 border border-slate-700 animate-in fade-in zoom-in-95 duration-200">
+                  <button
+                    onClick={() => {
+                      setIsEditing(true);
+                      setShowMenu(false);
+                    }}
+                    className="w-full px-4 py-2.5 text-left text-slate-200 hover:bg-slate-700/50 flex items-center gap-3 transition-colors"
+                  >
+                    <Edit className="w-4 h-4" />
+                    <span>Edit Post</span>
+                  </button>
+                  <button
+                    onClick={handleDelete}
+                    className="w-full px-4 py-2.5 text-left text-red-400 hover:bg-red-500/10 flex items-center gap-3 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    <span>Delete Post</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Content */}
@@ -287,11 +279,10 @@ const Post = ({ post, currentUserId, onUpdate }: PostProps) => {
           <div className="flex items-center gap-6 pt-4 border-t border-blue-500/20">
             <button
               onClick={handleLike}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 ${
-                isLiked 
-                  ? "text-red-500 bg-red-500/20 hover:bg-red-500/30" 
-                  : "text-slate-400 hover:text-red-500 hover:bg-red-500/10"
-              }`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 ${isLiked
+                ? "text-red-500 bg-red-500/20 hover:bg-red-500/30"
+                : "text-slate-400 hover:text-red-500 hover:bg-red-500/10"
+                }`}
             >
               <Heart className={`w-5 h-5 ${isLiked ? "fill-current animate-pulse" : ""}`} />
               <span className="font-semibold">{likeCount}</span>
