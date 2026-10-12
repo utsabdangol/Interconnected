@@ -64,54 +64,52 @@ const ReportButton = ({ itemType, itemId }: ReportButtonProps) => {
     <>
       <button
         onClick={() => setShowModal(true)}
-        className="p-2 hover:bg-slate-700 rounded-lg transition text-slate-400 hover:text-red-400"
+        className="p-1.5 hover:bg-gray-100 rounded transition-colors text-gray-400 hover:text-gray-600"
         title="Report"
       >
         <Flag className="w-4 h-4" />
       </button>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-slate-800 rounded-xl max-w-md w-full p-6 border border-slate-700">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded border border-gray-300 shadow-md max-w-md w-full p-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold text-white">Report {itemType}</h3>
+              <h3 className="text-xl font-bold text-gray-800">Report {itemType}</h3>
               <button
                 onClick={() => setShowModal(false)}
-                className="p-1 hover:bg-slate-700 rounded transition"
+                className="p-1 hover:bg-gray-100 rounded transition-colors"
               >
-                <X className="w-5 h-5 text-slate-400" />
+                <X className="w-5 h-5 text-gray-500" />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-slate-300 font-medium mb-2">
+                <label className="block text-gray-600 font-medium mb-2 text-sm">
                   Reason *
                 </label>
                 <select
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
                   required
-                  className="w-full px-4 py-2 bg-slate-900/50 border border-slate-600 rounded-lg text-white"
+                  className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400"
                 >
                   <option value="">Select a reason</option>
                   {reportReasons.map((r) => (
-                    <option key={r} value={r}>
-                      {r}
-                    </option>
+                    <option key={r} value={r}>{r}</option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-2">
+                <label className="block text-gray-600 font-medium mb-2 text-sm">
                   Additional details (optional)
                 </label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}
-                  className="w-full px-4 py-2 bg-slate-900/50 border border-slate-600 rounded-lg text-white resize-none"
+                  className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded text-gray-800 resize-none focus:outline-none focus:ring-1 focus:ring-gray-400"
                   placeholder="Provide more context about this report..."
                 />
               </div>
@@ -120,14 +118,14 @@ const ReportButton = ({ itemType, itemId }: ReportButtonProps) => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50"
+                  className="flex-1 py-2.5 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors font-medium disabled:opacity-50 text-sm"
                 >
                   {submitting ? "Submitting..." : "Submit Report"}
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition"
+                  className="flex-1 py-2.5 bg-white border border-gray-400 text-gray-600 rounded hover:bg-gray-100 transition-colors font-medium text-sm"
                 >
                   Cancel
                 </button>

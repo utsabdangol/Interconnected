@@ -31,7 +31,6 @@ const Post = ({ post, currentUserId, onUpdate }: PostProps) => {
   const [editTitle, setEditTitle] = useState(post.title);
   const [editContent, setEditContent] = useState(post.content);
 
-  // Ensure both IDs are compared as strings to handle potential type mismatches
   const isOwner = currentUserId !== null && String(currentUserId) === String(post.user_id);
 
   const handleLike = async () => {
@@ -46,7 +45,6 @@ const Post = ({ post, currentUserId, onUpdate }: PostProps) => {
         }
       );
       const data = await response.json();
-
       if (data.status === "success") {
         setIsLiked(data.liked);
         setLikeCount(prev => data.liked ? prev + 1 : prev - 1);
@@ -60,13 +58,9 @@ const Post = ({ post, currentUserId, onUpdate }: PostProps) => {
     try {
       const response = await fetch(
         `http://localhost/Interconnected/backend/api/post_actions.php?action=get_comments&post_id=${post.id}`,
-        {
-          method: "GET",
-          credentials: "include"
-        }
+        { method: "GET", credentials: "include" }
       );
       const data = await response.json();
-
       if (data.status === "success") {
         setComments(data.comments);
       }
@@ -80,7 +74,6 @@ const Post = ({ post, currentUserId, onUpdate }: PostProps) => {
       setShowComments(false);
       return;
     }
-
     await fetchComments();
     setShowComments(true);
   };
@@ -96,19 +89,13 @@ const Post = ({ post, currentUserId, onUpdate }: PostProps) => {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            post_id: post.id,
-            content: commentText
-          })
+          body: JSON.stringify({ post_id: post.id, content: commentText })
         }
       );
       const data = await response.json();
-
       if (data.status === "success") {
         setCommentText("");
-        // Refresh comments without closing the section
         await fetchComments();
-        // Also update the comment count by calling onUpdate to refresh the post
         onUpdate();
       }
     } catch (error) {
@@ -130,7 +117,6 @@ const Post = ({ post, currentUserId, onUpdate }: PostProps) => {
         }
       );
       const data = await response.json();
-
       if (data.status === "success") {
         onUpdate();
       } else {
@@ -151,15 +137,10 @@ const Post = ({ post, currentUserId, onUpdate }: PostProps) => {
           method: "PUT",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            post_id: post.id,
-            title: editTitle,
-            content: editContent
-          })
+          body: JSON.stringify({ post_id: post.id, title: editTitle, content: editContent })
         }
       );
       const data = await response.json();
-
       if (data.status === "success") {
         setIsEditing(false);
         onUpdate();
@@ -174,17 +155,17 @@ const Post = ({ post, currentUserId, onUpdate }: PostProps) => {
   const getInitial = (name: string) => name.charAt(0).toUpperCase();
 
   return (
-    <div className="bg-gradient-to-br from-slate-800/60 via-blue-900/20 to-slate-800/60 backdrop-blur-xl rounded-2xl p-6 border border-blue-500/20 shadow-xl shadow-blue-500/10 mb-6 hover:border-blue-500/40 hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-300">
+    <div className="bg-white rounded border border-gray-300 p-6 mb-4 hover:border-gray-400 transition-colors">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 via-emerald-500 to-blue-500 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-blue-500/30">
+          <div className="w-10 h-10 rounded-full bg-gray-300 border border-gray-400 flex items-center justify-center text-gray-700 font-bold text-base">
             {getInitial(post.username)}
           </div>
           <div>
-            <h3 className="text-white font-bold text-lg">{post.username}</h3>
-            <p className="text-blue-400 text-sm font-medium flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <h3 className="text-gray-800 font-semibold text-base">{post.username}</h3>
+            <p className="text-gray-400 text-xs flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
               {post.com_name}
             </p>
           </div>
@@ -198,26 +179,26 @@ const Post = ({ post, currentUserId, onUpdate }: PostProps) => {
             <div className="relative">
               <button
                 onClick={() => setShowMenu(!showMenu)}
-                className="p-2 hover:bg-slate-700/50 rounded-lg transition-colors duration-200"
+                className="p-1.5 hover:bg-gray-100 rounded transition-colors"
               >
-                <MoreVertical className="w-5 h-5 text-slate-400 hover:text-white" />
+                <MoreVertical className="w-5 h-5 text-gray-400" />
               </button>
 
               {showMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-xl shadow-xl shadow-black/50 py-1 z-10 border border-slate-700 animate-in fade-in zoom-in-95 duration-200">
+                <div className="absolute right-0 mt-2 w-44 bg-white rounded border border-gray-300 shadow-md py-1 z-10">
                   <button
                     onClick={() => {
                       setIsEditing(true);
                       setShowMenu(false);
                     }}
-                    className="w-full px-4 py-2.5 text-left text-slate-200 hover:bg-slate-700/50 flex items-center gap-3 transition-colors"
+                    className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 flex items-center gap-3 transition-colors text-sm"
                   >
                     <Edit className="w-4 h-4" />
                     <span>Edit Post</span>
                   </button>
                   <button
                     onClick={handleDelete}
-                    className="w-full px-4 py-2.5 text-left text-red-400 hover:bg-red-500/10 flex items-center gap-3 transition-colors"
+                    className="w-full px-4 py-2 text-left text-gray-500 hover:bg-gray-100 flex items-center gap-3 transition-colors text-sm"
                   >
                     <Trash2 className="w-4 h-4" />
                     <span>Delete Post</span>
@@ -231,30 +212,30 @@ const Post = ({ post, currentUserId, onUpdate }: PostProps) => {
 
       {/* Content */}
       {isEditing ? (
-        <form onSubmit={handleUpdate} className="space-y-4">
+        <form onSubmit={handleUpdate} className="space-y-3">
           <input
             type="text"
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
-            className="w-full px-4 py-2 bg-slate-900/50 border border-slate-600 rounded-lg text-white"
+            className="w-full px-4 py-2 bg-white border border-gray-300 rounded text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400"
           />
           <textarea
             value={editContent}
             onChange={(e) => setEditContent(e.target.value)}
             rows={4}
-            className="w-full px-4 py-2 bg-slate-900/50 border border-slate-600 rounded-lg text-white resize-none"
+            className="w-full px-4 py-2 bg-white border border-gray-300 rounded text-gray-800 resize-none focus:outline-none focus:ring-1 focus:ring-gray-400"
           />
           <div className="flex gap-2">
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 text-sm font-medium transition-colors"
             >
               Save
             </button>
             <button
               type="button"
               onClick={() => setIsEditing(false)}
-              className="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700"
+              className="px-4 py-2 bg-white border border-gray-300 text-gray-600 rounded hover:bg-gray-100 text-sm font-medium transition-colors"
             >
               Cancel
             </button>
@@ -262,11 +243,11 @@ const Post = ({ post, currentUserId, onUpdate }: PostProps) => {
         </form>
       ) : (
         <>
-          <h2 className="text-2xl font-bold text-white mb-3 bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">{post.title}</h2>
-          <p className="text-slate-300 mb-4 leading-relaxed">{post.content}</p>
+          <h2 className="text-xl font-bold text-gray-800 mb-2">{post.title}</h2>
+          <p className="text-gray-500 mb-4 leading-relaxed text-sm">{post.content}</p>
 
           {post.image && (
-            <div className="mb-4 rounded-xl overflow-hidden border border-blue-500/20 shadow-lg">
+            <div className="mb-4 rounded overflow-hidden border border-gray-300">
               <img
                 src={`http://localhost/Interconnected/backend/${post.image}`}
                 alt={post.title}
@@ -276,49 +257,49 @@ const Post = ({ post, currentUserId, onUpdate }: PostProps) => {
           )}
 
           {/* Actions */}
-          <div className="flex items-center gap-6 pt-4 border-t border-blue-500/20">
+          <div className="flex items-center gap-4 pt-4 border-t border-gray-200">
             <button
               onClick={handleLike}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 ${isLiked
-                ? "text-red-500 bg-red-500/20 hover:bg-red-500/30"
-                : "text-slate-400 hover:text-red-500 hover:bg-red-500/10"
+              className={`flex items-center gap-2 px-3 py-1.5 rounded transition-colors text-sm ${isLiked
+                  ? "text-gray-700 bg-gray-200 hover:bg-gray-300"
+                  : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
                 }`}
             >
-              <Heart className={`w-5 h-5 ${isLiked ? "fill-current animate-pulse" : ""}`} />
-              <span className="font-semibold">{likeCount}</span>
+              <Heart className={`w-4 h-4 ${isLiked ? "fill-current" : ""}`} />
+              <span className="font-medium">{likeCount}</span>
             </button>
 
             <button
               onClick={loadComments}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-slate-400 hover:text-blue-400 hover:bg-blue-500/10 transition-all duration-300"
+              className="flex items-center gap-2 px-3 py-1.5 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors text-sm"
             >
-              <MessageCircle className="w-5 h-5" />
-              <span className="font-semibold">{post.comment_count}</span>
+              <MessageCircle className="w-4 h-4" />
+              <span className="font-medium">{post.comment_count}</span>
             </button>
           </div>
 
           {/* Comments Section */}
           {showComments && (
-            <div className="mt-4 pt-4 border-t border-blue-500/20">
+            <div className="mt-4 pt-4 border-t border-gray-200">
               <form onSubmit={handleAddComment} className="mb-4">
                 <input
                   type="text"
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
                   placeholder="Write a comment..."
-                  className="w-full px-4 py-3 bg-gradient-to-r from-slate-900/50 to-blue-900/20 border border-blue-500/30 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
+                  className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 transition-all text-sm"
                 />
               </form>
 
               <div className="space-y-3">
                 {comments.map((comment) => (
-                  <div key={comment.id} className="flex gap-3 animate-fade-in">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-purple-500/30">
+                  <div key={comment.id} className="flex gap-3">
+                    <div className="w-8 h-8 rounded-full bg-gray-300 border border-gray-400 flex items-center justify-center text-gray-700 text-xs font-bold">
                       {getInitial(comment.username)}
                     </div>
-                    <div className="flex-1 bg-gradient-to-r from-slate-900/50 to-blue-900/20 rounded-xl p-3 border border-blue-500/20">
-                      <p className="text-white font-semibold text-sm mb-1">{comment.username}</p>
-                      <p className="text-slate-300 text-sm">{comment.content}</p>
+                    <div className="flex-1 bg-gray-50 rounded border border-gray-200 p-3">
+                      <p className="text-gray-700 font-semibold text-xs mb-1">{comment.username}</p>
+                      <p className="text-gray-500 text-sm">{comment.content}</p>
                     </div>
                   </div>
                 ))}

@@ -31,10 +31,7 @@ const CreatePost = () => {
     try {
       const response = await fetch(
         "http://localhost/Interconnected/backend/api/community_actions.php?action=get_user_communities",
-        {
-          method: "GET",
-          credentials: "include"
-        }
+        { method: "GET", credentials: "include" }
       );
       const data = await response.json();
 
@@ -63,21 +60,15 @@ const CreatePost = () => {
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Validate file type
       if (!file.type.startsWith('image/')) {
         setError("Please select an image file");
         return;
       }
-
-      // Validate file size (5MB)
       if (file.size > 5 * 1024 * 1024) {
         setError("Image must be less than 5MB");
         return;
       }
-
       setImageFile(file);
-
-      // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -96,20 +87,12 @@ const CreatePost = () => {
       formData.append("community_id", input.community_id);
       formData.append("title", input.title);
       formData.append("content", input.content);
-
-      if (imageFile) {
-        formData.append("image", imageFile);
-      }
+      if (imageFile) formData.append("image", imageFile);
 
       const response = await fetch(
         "http://localhost/Interconnected/backend/api/community_actions.php?action=create_post",
-        {
-          method: "POST",
-          credentials: "include",
-          body: formData // Don't set Content-Type header, browser will set it automatically
-        }
+        { method: "POST", credentials: "include", body: formData }
       );
-
       const data = await response.json();
 
       if (data.status === "success") {
@@ -124,45 +107,47 @@ const CreatePost = () => {
     }
   };
 
+  const inputClass = "w-full px-4 py-2.5 bg-white border border-gray-300 rounded text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 transition-all";
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-gray-500">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/30 to-slate-900 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-2xl">
-        <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-blue-500/20 animate-fade-in">
+        <div className="bg-white rounded border border-gray-300 shadow-sm p-8">
           <div className="text-center mb-8">
-            <h1 className="text-5xl font-bold text-white mb-2">Create Post</h1>
-            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-emerald-500 mx-auto rounded-full"></div>
+            <h1 className="text-4xl font-bold text-gray-800 mb-2">Create Post</h1>
+            <div className="w-16 h-0.5 bg-gray-300 mx-auto"></div>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg">
-              <p className="text-red-400 text-center">{error}</p>
+            <div className="mb-6 p-4 bg-gray-100 border border-gray-400 rounded">
+              <p className="text-gray-600 text-center text-sm">{error}</p>
             </div>
           )}
 
           {communities.length === 0 ? (
             <div className="text-center">
-              <p className="text-slate-300 mb-4">
+              <p className="text-gray-500 mb-4 text-sm">
                 You need to join a community before you can post.
               </p>
               <button
                 onClick={() => navigate("/home")}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                className="px-6 py-2.5 bg-white border border-gray-400 text-gray-700 rounded hover:bg-gray-100 transition-colors font-medium"
               >
-                <Link to="/home/community" className="hover:text-emerald-400 transition"> Browse Community</Link>
+                <Link to="/home/community" className="text-gray-700">Browse Community</Link>
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-slate-300 font-medium mb-2">
+                <label className="block text-gray-600 font-medium mb-2 text-sm">
                   Select Community *
                 </label>
                 <select
@@ -170,7 +155,7 @@ const CreatePost = () => {
                   required
                   value={input.community_id}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className={inputClass}
                 >
                   <option value="">-- Choose a community --</option>
                   {communities.map((community) => (
@@ -182,7 +167,7 @@ const CreatePost = () => {
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-2">
+                <label className="block text-gray-600 font-medium mb-2 text-sm">
                   Post Title *
                 </label>
                 <input
@@ -191,14 +176,14 @@ const CreatePost = () => {
                   required
                   value={input.title}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-slate-900/70 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                  className={inputClass}
                   placeholder="Enter post title"
                   maxLength={255}
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-2">
+                <label className="block text-gray-600 font-medium mb-2 text-sm">
                   Content *
                 </label>
                 <textarea
@@ -207,27 +192,27 @@ const CreatePost = () => {
                   value={input.content}
                   onChange={handleChange}
                   rows={8}
-                  className="w-full px-4 py-3 bg-slate-900/70 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all resize-none"
+                  className={`${inputClass} resize-none`}
                   placeholder="What's on your mind?"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-2">
+                <label className="block text-gray-600 font-medium mb-2 text-sm">
                   Upload Image (optional)
                 </label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
-                  className="w-full px-4 py-3 bg-slate-900/70 border border-slate-600/50 rounded-xl text-white file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:cursor-pointer file:font-semibold"
+                  className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded file:border file:border-gray-400 file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 file:cursor-pointer file:text-sm"
                 />
                 {imagePreview && (
                   <div className="mt-4">
                     <img
                       src={imagePreview}
                       alt="Preview"
-                      className="w-full max-h-64 object-cover rounded-lg"
+                      className="w-full max-h-64 object-cover rounded border border-gray-300"
                     />
                   </div>
                 )}
@@ -236,7 +221,7 @@ const CreatePost = () => {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="w-full py-2.5 bg-gray-800 text-white font-semibold rounded hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {submitting ? "Posting..." : "Create Post"}
               </button>

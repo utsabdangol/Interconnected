@@ -46,13 +46,9 @@ const ManageRequests = () => {
     try {
       const response = await fetch(
         "http://localhost/Interconnected/backend/api/community_requests.php?action=get_requests",
-        {
-          method: "GET",
-          credentials: "include"
-        }
+        { method: "GET", credentials: "include" }
       );
       const data = await response.json();
-
       if (data.status === "success") {
         setRequests(data.requests);
       }
@@ -65,7 +61,6 @@ const ManageRequests = () => {
 
   const handleApprove = async (requestId: number) => {
     setProcessingId(requestId);
-
     try {
       const response = await fetch(
         "http://localhost/Interconnected/backend/api/community_requests.php?action=approve_request",
@@ -77,7 +72,6 @@ const ManageRequests = () => {
         }
       );
       const data = await response.json();
-
       if (data.status === "success") {
         fetchRequests();
       } else {
@@ -92,9 +86,7 @@ const ManageRequests = () => {
 
   const handleReject = async (requestId: number) => {
     if (!confirm("Are you sure you want to reject this request?")) return;
-
     setProcessingId(requestId);
-
     try {
       const response = await fetch(
         "http://localhost/Interconnected/backend/api/community_requests.php?action=reject_request",
@@ -106,7 +98,6 @@ const ManageRequests = () => {
         }
       );
       const data = await response.json();
-
       if (data.status === "success") {
         fetchRequests();
       } else {
@@ -127,13 +118,9 @@ const ManageRequests = () => {
     try {
       const response = await fetch(
         `http://localhost/Interconnected/backend/api/profile_actions.php?action=get_user_profile&user_id=${userId}`,
-        {
-          method: "GET",
-          credentials: "include"
-        }
+        { method: "GET", credentials: "include" }
       );
       const data = await response.json();
-
       if (data.status === "success") {
         setUserProfile(data.user);
       } else {
@@ -156,81 +143,78 @@ const ManageRequests = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading requests...</div>
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-gray-500">Loading requests...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/30 to-slate-900 p-8">
+    <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-10 animate-fade-in">
-          <h1 className="text-5xl font-bold mb-3 bg-gradient-to-r from-blue-400 via-emerald-400 to-blue-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
-            Manage Join Requests
-          </h1>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-emerald-500 mx-auto rounded-full"></div>
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-bold text-gray-800 mb-3">Manage Join Requests</h1>
+          <div className="w-24 h-0.5 bg-gray-300 mx-auto"></div>
         </div>
 
         {requests.length === 0 ? (
-          <div className="bg-gradient-to-br from-slate-800/60 via-blue-900/20 to-slate-800/60 backdrop-blur-xl rounded-2xl p-16 border border-blue-500/20 shadow-2xl shadow-blue-500/10 text-center hover:border-blue-500/40 transition-all duration-300">
-            <div className="p-4 rounded-full bg-gradient-to-br from-blue-500/20 to-emerald-500/20 w-24 h-24 mx-auto mb-6 flex items-center justify-center">
-              <Clock className="w-12 h-12 text-blue-400" />
+          <div className="bg-white rounded border-2 border-dashed border-gray-300 p-16 text-center">
+            <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center rounded-full border-2 border-gray-300 bg-gray-50">
+              <Clock className="w-10 h-10 text-gray-400" />
             </div>
-            <p className="text-slate-300 text-xl font-semibold">No pending requests</p>
-            <p className="text-slate-400 mt-2">All requests have been processed</p>
+            <p className="text-gray-600 text-lg font-medium">No pending requests</p>
+            <p className="text-gray-400 mt-2 text-sm">All requests have been processed</p>
           </div>
         ) : (
-          <div className="space-y-4">
-            {requests.map((request, index) => (
+          <div className="space-y-3">
+            {requests.map((request) => (
               <div
                 key={request.request_id}
-                className="bg-gradient-to-br from-slate-800/60 via-blue-900/20 to-slate-800/60 backdrop-blur-xl rounded-2xl p-6 border border-blue-500/20 shadow-xl shadow-blue-500/10 flex items-center justify-between hover:border-blue-500/40 hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-300 animate-fade-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="bg-white rounded border border-gray-300 p-5 flex items-center justify-between hover:border-gray-400 transition-colors"
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-emerald-500 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-blue-500/30">
+                    <div className="w-10 h-10 rounded-full bg-gray-300 border border-gray-400 flex items-center justify-center text-gray-700 font-bold text-sm">
                       {request.username.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white">
+                      <h3 className="text-base font-bold text-gray-800">
                         {request.username}
                       </h3>
-                      <p className="text-slate-400 text-sm">
-                        wants to join <span className="text-blue-400 font-semibold">{request.com_name}</span>
+                      <p className="text-gray-400 text-sm">
+                        wants to join <span className="text-gray-600 font-medium">{request.com_name}</span>
                       </p>
                     </div>
                   </div>
-                  <p className="text-slate-500 text-xs ml-15 flex items-center gap-1">
+                  <p className="text-gray-400 text-xs flex items-center gap-1 ml-13">
                     <Clock className="w-3 h-3" />
                     Requested {new Date(request.joined_at).toLocaleDateString()}
                   </p>
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex gap-2">
                   <button
                     onClick={() => handleViewProfile(request.user_id)}
-                    className="p-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-500 hover:to-blue-600 transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/50 hover:scale-110"
+                    className="p-2.5 bg-white border border-gray-300 text-gray-600 rounded hover:bg-gray-100 transition-colors"
                     title="View Profile"
                   >
-                    <User className="w-5 h-5" />
+                    <User className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleApprove(request.request_id)}
                     disabled={processingId === request.request_id}
-                    className="p-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-xl hover:from-emerald-500 hover:to-emerald-600 transition-all duration-300 shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/50 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    className="p-2.5 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Approve"
                   >
-                    <Check className="w-5 h-5" />
+                    <Check className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleReject(request.request_id)}
                     disabled={processingId === request.request_id}
-                    className="p-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl hover:from-red-500 hover:to-red-600 transition-all duration-300 shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/50 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    className="p-2.5 bg-white border border-gray-400 text-gray-500 rounded hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Reject"
                   >
-                    <X className="w-5 h-5" />
+                    <X className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -241,49 +225,49 @@ const ManageRequests = () => {
 
       {/* Profile Modal */}
       {viewingProfile && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fade-in">
-          <div className="bg-gradient-to-br from-slate-800 via-blue-900/30 to-slate-800 rounded-2xl border border-blue-500/30 shadow-2xl shadow-blue-500/20 max-w-md w-full max-h-[90vh] overflow-y-auto animate-scale-in">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded border border-gray-300 shadow-md max-w-md w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-blue-500/20">
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">User Profile</h2>
+              <div className="flex items-center justify-between mb-5 pb-4 border-b border-gray-200">
+                <h2 className="text-2xl font-bold text-gray-800">User Profile</h2>
                 <button
                   onClick={closeProfileModal}
-                  className="p-2 hover:bg-red-500/20 rounded-xl transition-all duration-300 hover:scale-110 border border-red-500/30"
+                  className="p-1.5 hover:bg-gray-100 rounded transition-colors"
                 >
-                  <XCircle className="w-6 h-6 text-red-400" />
+                  <XCircle className="w-5 h-5 text-gray-500" />
                 </button>
               </div>
 
               {loadingProfile ? (
                 <div className="flex items-center justify-center py-12">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                  <div className="rounded-full h-10 w-10 border-2 border-gray-400 border-t-transparent animate-spin"></div>
                 </div>
               ) : userProfile ? (
                 <div className="space-y-4">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-r from-blue-500 via-emerald-500 to-blue-500 flex items-center justify-center text-white text-3xl font-bold shadow-xl shadow-blue-500/30 animate-pulse-slow">
+                  <div className="flex items-center gap-4 mb-5">
+                    <div className="w-16 h-16 rounded-full bg-gray-300 border border-gray-400 flex items-center justify-center text-gray-700 text-2xl font-bold">
                       {userProfile.username.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-white mb-1">{userProfile.username}</h3>
-                      <p className="text-slate-400">{userProfile.email}</p>
+                      <h3 className="text-xl font-bold text-gray-800">{userProfile.username}</h3>
+                      <p className="text-gray-400 text-sm">{userProfile.email}</p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/10 rounded-xl p-4 border border-blue-500/30 hover:border-blue-500/50 transition-all duration-300">
-                      <p className="text-slate-400 text-sm mb-2 font-semibold">Posts</p>
-                      <p className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">{userProfile.post_count}</p>
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    <div className="bg-gray-50 rounded border border-gray-200 p-4">
+                      <p className="text-gray-400 text-xs mb-1 font-medium uppercase tracking-wider">Posts</p>
+                      <p className="text-2xl font-bold text-gray-800">{userProfile.post_count}</p>
                     </div>
-                    <div className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 rounded-xl p-4 border border-emerald-500/30 hover:border-emerald-500/50 transition-all duration-300">
-                      <p className="text-slate-400 text-sm mb-2 font-semibold">Communities</p>
-                      <p className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">{userProfile.community_count}</p>
+                    <div className="bg-gray-50 rounded border border-gray-200 p-4">
+                      <p className="text-gray-400 text-xs mb-1 font-medium uppercase tracking-wider">Communities</p>
+                      <p className="text-2xl font-bold text-gray-800">{userProfile.community_count}</p>
                     </div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-slate-700/50 to-slate-800/50 rounded-xl p-4 border border-slate-600/30 mb-4">
-                    <p className="text-slate-400 text-sm mb-2 font-semibold">Member Since</p>
-                    <p className="text-white text-lg">
+                  <div className="bg-gray-50 rounded border border-gray-200 p-4">
+                    <p className="text-gray-400 text-xs mb-1 font-medium uppercase tracking-wider">Member Since</p>
+                    <p className="text-gray-800">
                       {new Date(userProfile.created_at).toLocaleDateString()}
                     </p>
                   </div>
@@ -292,8 +276,8 @@ const ManageRequests = () => {
                   {userProfile.report_count > 0 && (
                     <div className="mb-4">
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-2 h-2 rounded-full bg-red-500"></div>
-                        <h4 className="text-lg font-bold text-white">
+                        <div className="w-2 h-2 rounded-full bg-gray-500"></div>
+                        <h4 className="text-base font-bold text-gray-700">
                           Reports ({userProfile.report_count})
                         </h4>
                       </div>
@@ -301,34 +285,29 @@ const ManageRequests = () => {
                         {userProfile.reports.map((report) => (
                           <div
                             key={report.id}
-                            className="bg-gradient-to-r from-red-500/10 to-red-600/5 rounded-xl p-3 border border-red-500/30"
+                            className="bg-gray-50 rounded border border-gray-300 p-3"
                           >
                             <div className="flex items-start justify-between mb-2">
                               <div className="flex-1">
-                                <p className="text-red-300 font-semibold text-sm mb-1">
+                                <p className="text-gray-700 font-medium text-sm mb-1">
                                   {report.reason}
                                 </p>
                                 {report.description && (
-                                  <p className="text-slate-300 text-xs mb-2">
+                                  <p className="text-gray-500 text-xs mb-2">
                                     {report.description}
                                   </p>
                                 )}
                                 <div className="flex items-center gap-2 text-xs">
-                                  <span className="text-slate-400">
+                                  <span className="text-gray-400">
                                     By: {report.reporter_username}
                                   </span>
-                                  <span className={`px-2 py-0.5 rounded-lg ${report.status === 'resolved'
-                                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                                    : report.status === 'under_review'
-                                      ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-                                      : 'bg-red-500/20 text-red-300 border border-red-500/30'
-                                    }`}>
+                                  <span className="px-2 py-0.5 rounded bg-gray-200 text-gray-600 border border-gray-300">
                                     {report.status}
                                   </span>
                                 </div>
                               </div>
                             </div>
-                            <p className="text-slate-500 text-xs mt-1">
+                            <p className="text-gray-400 text-xs mt-1">
                               {new Date(report.created_at).toLocaleDateString()}
                             </p>
                           </div>
@@ -338,9 +317,9 @@ const ManageRequests = () => {
                   )}
 
                   {userProfile.report_count === 0 && (
-                    <div className="mb-4 bg-gradient-to-r from-emerald-500/10 to-emerald-600/5 rounded-xl p-3 border border-emerald-500/30">
-                      <p className="text-emerald-300 text-sm font-semibold flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <div className="mb-4 bg-gray-50 rounded border border-gray-200 p-3">
+                      <p className="text-gray-500 text-sm font-medium flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-gray-400"></span>
                         No reports - Clean profile
                       </p>
                     </div>
@@ -355,13 +334,13 @@ const ManageRequests = () => {
                           handleApprove(request.request_id);
                         }
                       }}
-                      className="flex-1 px-4 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-xl hover:from-emerald-500 hover:to-emerald-600 transition-all duration-300 shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/50 hover:scale-105 font-semibold"
+                      className="flex-1 px-4 py-2.5 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors font-medium text-sm"
                     >
                       Approve Request
                     </button>
                     <button
                       onClick={closeProfileModal}
-                      className="flex-1 px-4 py-3 bg-gradient-to-r from-slate-700 to-slate-600 text-white rounded-xl hover:from-slate-600 hover:to-slate-500 transition-all duration-300 shadow-lg shadow-slate-500/20 hover:shadow-xl hover:shadow-slate-500/30 hover:scale-105 font-semibold"
+                      className="flex-1 px-4 py-2.5 bg-white border border-gray-400 text-gray-600 rounded hover:bg-gray-100 transition-colors font-medium text-sm"
                     >
                       Close
                     </button>
@@ -369,7 +348,7 @@ const ManageRequests = () => {
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <p className="text-slate-400">Failed to load profile</p>
+                  <p className="text-gray-400">Failed to load profile</p>
                 </div>
               )}
             </div>

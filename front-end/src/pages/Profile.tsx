@@ -47,6 +47,7 @@ interface UserProfile {
 const Profile = ({ userId }: ProfileProps) => {
   const [userPosts, setUserPosts] = useState<any[]>([]);
   const [userCommunities, setUserCommunities] = useState<Community[]>([]);
+  const [joinedCommunities, setJoinedCommunities] = useState<Community[]>([]);
   const [requests, setRequests] = useState<Request[]>([]);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -68,6 +69,7 @@ const Profile = ({ userId }: ProfileProps) => {
       fetchUserData();
       fetchUserPosts();
       fetchUserCommunities();
+      fetchJoinedCommunities();
       fetchRequests();
     }
   }, [userId]);
@@ -76,10 +78,7 @@ const Profile = ({ userId }: ProfileProps) => {
     try {
       const response = await fetch(
         "http://localhost/Interconnected/backend/api/session-check.php",
-        {
-          method: "GET",
-          credentials: "include"
-        }
+        { method: "GET", credentials: "include" }
       );
       const data = await response.json();
       if (data.logged_in) {
@@ -95,10 +94,7 @@ const Profile = ({ userId }: ProfileProps) => {
     try {
       const response = await fetch(
         `http://localhost/Interconnected/backend/api/profile_actions.php?action=get_user_posts`,
-        {
-          method: "GET",
-          credentials: "include"
-        }
+        { method: "GET", credentials: "include" }
       );
       const data = await response.json();
       if (data.status === "success") {
@@ -115,10 +111,7 @@ const Profile = ({ userId }: ProfileProps) => {
     try {
       const response = await fetch(
         `http://localhost/Interconnected/backend/api/profile_actions.php?action=get_created_communities`,
-        {
-          method: "GET",
-          credentials: "include"
-        }
+        { method: "GET", credentials: "include" }
       );
       const data = await response.json();
       if (data.status === "success") {
@@ -129,17 +122,28 @@ const Profile = ({ userId }: ProfileProps) => {
     }
   };
 
+  const fetchJoinedCommunities = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost/Interconnected/backend/api/profile_actions.php?action=get_joined_communities`,
+        { method: "GET", credentials: "include" }
+      );
+      const data = await response.json();
+      if (data.status === "success") {
+        setJoinedCommunities(data.communities);
+      }
+    } catch (error) {
+      console.error("Failed to fetch joined communities:", error);
+    }
+  };
+
   const fetchRequests = async () => {
     try {
       const response = await fetch(
         "http://localhost/Interconnected/backend/api/community_requests.php?action=get_requests",
-        {
-          method: "GET",
-          credentials: "include"
-        }
+        { method: "GET", credentials: "include" }
       );
       const data = await response.json();
-      
       if (data.status === "success") {
         setRequests(data.requests);
       }
@@ -166,14 +170,10 @@ const Profile = ({ userId }: ProfileProps) => {
           method: "PUT",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            community_id: communityId,
-            ...editForm
-          })
+          body: JSON.stringify({ community_id: communityId, ...editForm })
         }
       );
       const data = await response.json();
-      
       if (data.status === "success") {
         setEditingCommunity(null);
         fetchUserCommunities();
@@ -186,10 +186,7 @@ const Profile = ({ userId }: ProfileProps) => {
   };
 
   const handleDeleteCommunity = async (communityId: number) => {
-    if (!confirm("Are you sure you want to delete this community? All posts and members will be removed.")) {
-      return;
-    }
-
+    if (!confirm("Are you sure you want to delete this community? All posts and members will be removed.")) return;
     try {
       const response = await fetch(
         "http://localhost/Interconnected/backend/api/profile_actions.php?action=delete_community",
@@ -201,7 +198,6 @@ const Profile = ({ userId }: ProfileProps) => {
         }
       );
       const data = await response.json();
-      
       if (data.status === "success") {
         fetchUserCommunities();
         fetchUserPosts();
@@ -213,9 +209,32 @@ const Profile = ({ userId }: ProfileProps) => {
     }
   };
 
+  const handleLeaveCommunity = async (communityId: number) => {
+    if (!confirm("Are you sure you want to leave this community?")) return;
+    try {
+      const response = await fetch(
+        "http://localhost/Interconnected/backend/api/leave_community.php",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ community_id: communityId })
+        }
+      );
+      const data = await response.json();
+      if (data.status === "success") {
+        fetchJoinedCommunities();
+        fetchUserPosts();
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Failed to leave community:", error);
+    }
+  };
+
   const handleApproveRequest = async (requestId: number) => {
     setProcessingRequestId(requestId);
-    
     try {
       const response = await fetch(
         "http://localhost/Interconnected/backend/api/community_requests.php?action=approve_request",
@@ -227,10 +246,9 @@ const Profile = ({ userId }: ProfileProps) => {
         }
       );
       const data = await response.json();
-      
       if (data.status === "success") {
         fetchRequests();
-        fetchUserCommunities(); // Refresh to update member count
+        fetchUserCommunities();
       } else {
         alert(data.message);
       }
@@ -243,9 +261,7 @@ const Profile = ({ userId }: ProfileProps) => {
 
   const handleRejectRequest = async (requestId: number) => {
     if (!confirm("Are you sure you want to reject this request?")) return;
-    
     setProcessingRequestId(requestId);
-    
     try {
       const response = await fetch(
         "http://localhost/Interconnected/backend/api/community_requests.php?action=reject_request",
@@ -257,7 +273,6 @@ const Profile = ({ userId }: ProfileProps) => {
         }
       );
       const data = await response.json();
-      
       if (data.status === "success") {
         fetchRequests();
       } else {
@@ -274,17 +289,12 @@ const Profile = ({ userId }: ProfileProps) => {
     setViewingProfile(userId);
     setLoadingProfile(true);
     setUserProfile(null);
-    
     try {
       const response = await fetch(
         `http://localhost/Interconnected/backend/api/profile_actions.php?action=get_user_profile&user_id=${userId}`,
-        {
-          method: "GET",
-          credentials: "include"
-        }
+        { method: "GET", credentials: "include" }
       );
       const data = await response.json();
-      
       if (data.status === "success") {
         setUserProfile(data.user);
       } else {
@@ -305,42 +315,48 @@ const Profile = ({ userId }: ProfileProps) => {
     setUserProfile(null);
   };
 
+  const inputClass = "w-full px-3 py-2 bg-white border border-gray-300 rounded text-gray-800 text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 transition-all";
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/30 to-slate-900 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-          <div className="text-white text-xl">Loading profile...</div>
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="rounded-full h-10 w-10 border-2 border-gray-400 border-t-transparent animate-spin"></div>
+          <div className="text-gray-500">Loading profile...</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/30 to-slate-900 p-6">
+    <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Profile Header */}
-        <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-xl rounded-2xl p-8 border border-blue-500/20 shadow-2xl shadow-blue-500/10 mb-8 animate-fade-in">
+        <div className="bg-white rounded border border-gray-300 p-8 mb-6">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-            <div className="w-28 h-28 rounded-full bg-gradient-to-r from-blue-500 via-emerald-500 to-blue-500 flex items-center justify-center text-white text-5xl font-bold shadow-xl shadow-blue-500/30 animate-pulse-slow">
+            <div className="w-24 h-24 rounded-full bg-gray-300 border-2 border-gray-400 flex items-center justify-center text-gray-700 text-4xl font-bold">
               {username.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 text-center md:text-left">
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">{username}</h1>
-              <p className="text-slate-400 text-lg mb-4">{email}</p>
-              <div className="flex flex-wrap gap-4 justify-center md:justify-start">
-                <div className="px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-xl">
-                  <span className="text-blue-300 font-semibold">{userPosts.length}</span>
-                  <span className="text-slate-400 ml-2">Posts</span>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-1">{username}</h1>
+              <p className="text-gray-400 mb-4">{email}</p>
+              <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+                <div className="px-4 py-2 bg-gray-100 border border-gray-300 rounded">
+                  <span className="text-gray-800 font-bold">{userPosts.length}</span>
+                  <span className="text-gray-400 ml-2 text-sm">Posts</span>
                 </div>
-                <div className="px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 rounded-xl">
-                  <span className="text-emerald-300 font-semibold">{userCommunities.length}</span>
-                  <span className="text-slate-400 ml-2">Communities</span>
+                <div className="px-4 py-2 bg-gray-100 border border-gray-300 rounded">
+                  <span className="text-gray-800 font-bold">{userCommunities.length}</span>
+                  <span className="text-gray-400 ml-2 text-sm">Communities</span>
+                </div>
+                <div className="px-4 py-2 bg-gray-100 border border-gray-300 rounded">
+                  <span className="text-gray-800 font-bold">{joinedCommunities.length}</span>
+                  <span className="text-gray-400 ml-2 text-sm">Joined</span>
                 </div>
                 {requests.length > 0 && (
-                  <div className="px-4 py-2 bg-yellow-500/20 border border-yellow-500/30 rounded-xl">
-                    <span className="text-yellow-300 font-semibold">{requests.length}</span>
-                    <span className="text-slate-400 ml-2">Pending {requests.length === 1 ? 'Request' : 'Requests'}</span>
+                  <div className="px-4 py-2 bg-gray-100 border border-gray-300 rounded">
+                    <span className="text-gray-800 font-bold">{requests.length}</span>
+                    <span className="text-gray-400 ml-2 text-sm">Pending {requests.length === 1 ? 'Request' : 'Requests'}</span>
                   </div>
                 )}
               </div>
@@ -350,64 +366,56 @@ const Profile = ({ userId }: ProfileProps) => {
 
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Posts Section - Left/Center */}
+          {/* Posts Section */}
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 rounded-xl bg-blue-500/20 border border-blue-500/30">
-                <Edit className="w-6 h-6 text-blue-400" />
-              </div>
-              <h2 className="text-3xl font-bold text-white">Your Posts</h2>
+            <div className="flex items-center gap-2 mb-4">
+              <Edit className="w-5 h-5 text-gray-500" />
+              <h2 className="text-2xl font-bold text-gray-800">Your Posts</h2>
             </div>
             {userPosts.length === 0 ? (
-              <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-xl rounded-2xl p-16 border border-blue-500/20 shadow-xl shadow-blue-500/10 text-center">
-                <Edit className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-                <p className="text-slate-300 text-xl font-semibold mb-2">No posts yet</p>
-                <p className="text-slate-400">Create your first post to get started!</p>
+              <div className="bg-white rounded border-2 border-dashed border-gray-300 p-16 text-center">
+                <Edit className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                <p className="text-gray-500 font-medium">No posts yet</p>
+                <p className="text-gray-400 text-sm mt-1">Create your first post to get started!</p>
               </div>
             ) : (
-              <div className="space-y-6">
-                {userPosts.map((post, index) => (
-                  <div key={post.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.05}s` }}>
-                    <Post
-                      post={post}
-                      currentUserId={userId}
-                      onUpdate={fetchUserPosts}
-                    />
-                  </div>
+              <div className="space-y-4">
+                {userPosts.map((post) => (
+                  <Post
+                    key={post.id}
+                    post={post}
+                    currentUserId={userId}
+                    onUpdate={fetchUserPosts}
+                  />
                 ))}
               </div>
             )}
           </div>
 
           {/* Right Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Pending Requests Section */}
+          <div className="lg:col-span-1 space-y-5">
+            {/* Pending Requests */}
             {requests.length > 0 && (
-              <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-xl rounded-2xl p-6 border border-yellow-500/20 shadow-xl shadow-yellow-500/10">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 rounded-xl bg-yellow-500/20 border border-yellow-500/30">
-                    <Clock className="w-6 h-6 text-yellow-400" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-white">
-                    Pending Requests
-                  </h2>
-                  <span className="px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-lg text-sm font-bold border border-yellow-500/30">
+              <div className="bg-white rounded border border-gray-300 p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <Clock className="w-5 h-5 text-gray-500" />
+                  <h2 className="text-lg font-bold text-gray-800">Pending Requests</h2>
+                  <span className="px-2 py-0.5 bg-gray-200 text-gray-600 rounded text-xs font-bold border border-gray-300">
                     {requests.length}
                   </span>
                 </div>
                 <div className="space-y-3">
-                  {requests.map((request, index) => (
+                  {requests.map((request) => (
                     <div
                       key={request.request_id}
-                      className="bg-gradient-to-r from-slate-900/50 to-slate-800/50 backdrop-blur-xl rounded-xl p-4 border border-slate-700/50 hover:border-yellow-500/30 hover:shadow-lg hover:shadow-yellow-500/10 transition-all duration-300 animate-fade-in"
-                      style={{ animationDelay: `${index * 0.1}s` }}
+                      className="bg-gray-50 rounded border border-gray-200 p-4 hover:border-gray-300 transition-colors"
                     >
                       <div className="mb-3">
-                        <p className="text-white font-bold">{request.username}</p>
-                        <p className="text-slate-400 text-sm mt-1">
-                          wants to join <span className="text-blue-400 font-semibold">{request.com_name}</span>
+                        <p className="text-gray-800 font-semibold text-sm">{request.username}</p>
+                        <p className="text-gray-400 text-xs mt-0.5">
+                          wants to join <span className="text-gray-600 font-medium">{request.com_name}</span>
                         </p>
-                        <p className="text-slate-500 text-xs mt-2 flex items-center gap-1">
+                        <p className="text-gray-400 text-xs mt-1 flex items-center gap-1">
                           <Clock className="w-3 h-3" />
                           {new Date(request.joined_at).toLocaleDateString()}
                         </p>
@@ -415,27 +423,26 @@ const Profile = ({ userId }: ProfileProps) => {
                       <div className="flex flex-col gap-2">
                         <button
                           onClick={() => handleViewProfile(request.user_id)}
-                          className="w-full px-3 py-2 bg-blue-600 text-white text-sm rounded-xl hover:bg-blue-700 transition-all duration-300 hover:scale-105 shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 font-semibold"
-                          title="View Profile"
+                          className="w-full px-3 py-1.5 bg-white border border-gray-300 text-gray-600 text-sm rounded hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 font-medium"
                         >
-                          <User className="w-4 h-4" />
+                          <User className="w-3.5 h-3.5" />
                           View Profile
                         </button>
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleApproveRequest(request.request_id)}
                             disabled={processingRequestId === request.request_id}
-                            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-emerald-600 text-white text-sm rounded-xl hover:bg-emerald-700 transition-all duration-300 hover:scale-105 shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:hover:scale-100 font-semibold"
+                            className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 bg-gray-700 text-white text-sm rounded hover:bg-gray-600 transition-colors disabled:opacity-50 font-medium"
                           >
-                            <Check className="w-4 h-4" />
+                            <Check className="w-3.5 h-3.5" />
                             Approve
                           </button>
                           <button
                             onClick={() => handleRejectRequest(request.request_id)}
                             disabled={processingRequestId === request.request_id}
-                            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-red-600 text-white text-sm rounded-xl hover:bg-red-700 transition-all duration-300 hover:scale-105 shadow-lg shadow-red-500/20 disabled:opacity-50 disabled:hover:scale-100 font-semibold"
+                            className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 bg-white border border-gray-400 text-gray-500 text-sm rounded hover:bg-gray-100 transition-colors disabled:opacity-50 font-medium"
                           >
-                            <X className="w-4 h-4" />
+                            <X className="w-3.5 h-3.5" />
                             Reject
                           </button>
                         </div>
@@ -446,125 +453,164 @@ const Profile = ({ userId }: ProfileProps) => {
               </div>
             )}
 
-            {/* Communities Section */}
-            <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-xl rounded-2xl p-6 border border-emerald-500/20 shadow-xl shadow-emerald-500/10">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 rounded-xl bg-emerald-500/20 border border-emerald-500/30">
-                  <Users className="w-6 h-6 text-emerald-400" />
-                </div>
-                <h2 className="text-2xl font-bold text-white">Your Communities</h2>
+            {/* Created Communities */}
+            <div className="bg-white rounded border border-gray-300 p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Users className="w-5 h-5 text-gray-500" />
+                <h2 className="text-lg font-bold text-gray-800">Your Created Communities</h2>
               </div>
-              
+
               {userCommunities.length === 0 ? (
-                <div className="bg-gradient-to-r from-slate-900/50 to-slate-800/50 backdrop-blur-xl rounded-xl p-8 border border-slate-700/50 text-center">
-                  <Users className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-                  <p className="text-slate-300 font-semibold">No communities yet</p>
-                  <p className="text-slate-400 text-sm mt-1">Create your first community!</p>
+                <div className="bg-gray-50 rounded border-2 border-dashed border-gray-300 p-8 text-center">
+                  <Users className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+                  <p className="text-gray-500 text-sm font-medium">No communities yet</p>
+                  <p className="text-gray-400 text-xs mt-1">Create your first community!</p>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {userCommunities.map((community, index) => (
+                <div className="space-y-3">
+                  {userCommunities.map((community) => (
                     <div
                       key={community.id}
-                      className="bg-gradient-to-r from-slate-900/50 to-slate-800/50 backdrop-blur-xl rounded-xl p-5 border border-slate-700/50 hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300 animate-fade-in"
-                      style={{ animationDelay: `${index * 0.05}s` }}
+                      className="bg-gray-50 rounded border border-gray-200 p-4 hover:border-gray-300 transition-colors"
                     >
                       {editingCommunity === community.id ? (
-                        // Edit Mode
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                           <input
                             type="text"
                             value={editForm.com_name}
                             onChange={(e) => setEditForm({ ...editForm, com_name: e.target.value })}
-                            className="w-full px-4 py-2.5 bg-slate-900/70 border border-slate-600/50 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                            className={inputClass}
                             placeholder="Community Name"
                           />
                           <input
                             type="text"
                             value={editForm.category}
                             onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
-                            className="w-full px-4 py-2.5 bg-slate-900/70 border border-slate-600/50 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                            className={inputClass}
                             placeholder="Category"
                           />
                           <textarea
                             value={editForm.com_description}
                             onChange={(e) => setEditForm({ ...editForm, com_description: e.target.value })}
                             rows={3}
-                            className="w-full px-4 py-2.5 bg-slate-900/70 border border-slate-600/50 rounded-xl text-white text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                            className={`${inputClass} resize-none`}
                             placeholder="Description"
                           />
                           <select
                             value={editForm.privacy}
                             onChange={(e) => setEditForm({ ...editForm, privacy: e.target.value })}
-                            className="w-full px-4 py-2.5 bg-slate-900/70 border border-slate-600/50 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                            className={inputClass}
                           >
                             <option value="public">Public</option>
                             <option value="private">Private</option>
                           </select>
-                          <div className="flex gap-2">
+                          <div className="flex gap-2 pt-1">
                             <button
                               onClick={() => handleUpdateCommunity(community.id)}
-                              className="flex-1 px-4 py-2.5 bg-blue-600 text-white text-sm rounded-xl hover:bg-blue-700 transition-all duration-300 hover:scale-105 shadow-lg shadow-blue-500/20 font-semibold"
+                              className="flex-1 px-3 py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-700 transition-colors font-medium"
                             >
                               Save
                             </button>
                             <button
                               onClick={() => setEditingCommunity(null)}
-                              className="flex-1 px-4 py-2.5 bg-slate-600 text-white text-sm rounded-xl hover:bg-slate-700 transition-all duration-300 hover:scale-105 font-semibold"
+                              className="flex-1 px-3 py-2 bg-white border border-gray-400 text-gray-600 text-sm rounded hover:bg-gray-100 transition-colors font-medium"
                             >
                               Cancel
                             </button>
                           </div>
                         </div>
                       ) : (
-                        // View Mode
                         <>
-                          <div className="flex justify-between items-start mb-3">
+                          <div className="flex justify-between items-start mb-2">
                             <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-2">
-                                <h3 className="text-lg font-bold text-white">{community.com_name}</h3>
+                              <div className="flex items-center gap-2 mb-1">
+                                <h3 className="text-sm font-bold text-gray-800">{community.com_name}</h3>
                                 {community.privacy === 'private' ? (
-                                  <div className="p-1 rounded-lg bg-blue-500/20 border border-blue-500/30" title="Private Community">
-                                    <Lock className="w-4 h-4 text-blue-400" />
-                                  </div>
+                                  <Lock className="w-3.5 h-3.5 text-gray-400" />
                                 ) : (
-                                  <div className="p-1 rounded-lg bg-emerald-500/20 border border-emerald-500/30" title="Public Community">
-                                    <Globe className="w-4 h-4 text-emerald-400" />
-                                  </div>
+                                  <Globe className="w-3.5 h-3.5 text-gray-400" />
                                 )}
                               </div>
-                              <span className="inline-block px-3 py-1 bg-blue-500/20 text-blue-300 rounded-lg text-xs font-semibold border border-blue-500/30">
+                              <span className="inline-block px-2 py-0.5 bg-gray-200 text-gray-600 rounded text-xs border border-gray-300">
                                 {community.category}
                               </span>
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex gap-1.5">
                               <button
                                 onClick={() => handleEditCommunity(community)}
-                                className="p-2 hover:bg-blue-500/20 rounded-xl transition-all duration-300 hover:scale-110 border border-blue-500/20 hover:border-blue-500/40"
+                                className="p-1.5 hover:bg-gray-200 rounded transition-colors"
                                 title="Edit"
                               >
-                                <Edit className="w-4 h-4 text-blue-400" />
+                                <Edit className="w-3.5 h-3.5 text-gray-500" />
                               </button>
                               <button
                                 onClick={() => handleDeleteCommunity(community.id)}
-                                className="p-2 hover:bg-red-500/20 rounded-xl transition-all duration-300 hover:scale-110 border border-red-500/20 hover:border-red-500/40"
+                                className="p-1.5 hover:bg-gray-200 rounded transition-colors"
                                 title="Delete"
                               >
-                                <Trash2 className="w-4 h-4 text-red-400" />
+                                <Trash2 className="w-3.5 h-3.5 text-gray-500" />
                               </button>
                             </div>
                           </div>
-                          
-                          <p className="text-slate-300 text-sm mb-3 line-clamp-2 leading-relaxed">
-                            {community.com_description}
-                          </p>
-                          
-                          <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-800/50 rounded-lg border border-slate-700/50 w-fit">
-                            <Users className="w-4 h-4 text-emerald-400" />
-                            <span className="text-slate-300 text-sm font-semibold">{community.member_count} members</span>
+                          <p className="text-gray-500 text-xs mb-2 line-clamp-2">{community.com_description}</p>
+                          <div className="flex items-center gap-1.5 text-gray-400 text-xs">
+                            <Users className="w-3.5 h-3.5" />
+                            <span>{community.member_count} members</span>
                           </div>
                         </>
                       )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Joined Communities */}
+            <div className="bg-white rounded border border-gray-300 p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Users className="w-5 h-5 text-gray-500" />
+                <h2 className="text-lg font-bold text-gray-800">Joined Communities</h2>
+              </div>
+
+              {joinedCommunities.length === 0 ? (
+                <div className="bg-gray-50 rounded border-2 border-dashed border-gray-300 p-8 text-center">
+                  <Users className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+                  <p className="text-gray-500 text-sm font-medium">No joined communities</p>
+                  <p className="text-gray-400 text-xs mt-1">Join a community to connect!</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {joinedCommunities.map((community) => (
+                    <div
+                      key={community.id}
+                      className="bg-gray-50 rounded border border-gray-200 p-4 hover:border-gray-300 transition-colors"
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="text-sm font-bold text-gray-800">{community.com_name}</h3>
+                            {community.privacy === 'private' ? (
+                              <Lock className="w-3.5 h-3.5 text-gray-400" />
+                            ) : (
+                              <Globe className="w-3.5 h-3.5 text-gray-400" />
+                            )}
+                          </div>
+                          <span className="inline-block px-2 py-0.5 bg-gray-200 text-gray-600 rounded text-xs border border-gray-300">
+                            {community.category}
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => handleLeaveCommunity(community.id)}
+                          className="px-2.5 py-1 bg-white border border-gray-400 text-gray-500 rounded text-xs font-medium hover:bg-gray-100 transition-colors"
+                        >
+                          Leave
+                        </button>
+                      </div>
+                      <p className="text-gray-500 text-xs mb-2 line-clamp-2">{community.com_description}</p>
+                      <div className="flex items-center gap-1.5 text-gray-400 text-xs">
+                        <Users className="w-3.5 h-3.5" />
+                        <span>{community.member_count} members</span>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -576,59 +622,56 @@ const Profile = ({ userId }: ProfileProps) => {
 
       {/* Profile Modal */}
       {viewingProfile && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fade-in">
-          <div className="bg-gradient-to-br from-slate-800 via-blue-900/30 to-slate-800 rounded-2xl border border-blue-500/30 shadow-2xl shadow-blue-500/20 max-w-md w-full max-h-[90vh] overflow-y-auto animate-scale-in">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded border border-gray-300 shadow-md max-w-md w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-blue-500/20">
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">User Profile</h2>
+              <div className="flex items-center justify-between mb-5 pb-4 border-b border-gray-200">
+                <h2 className="text-2xl font-bold text-gray-800">User Profile</h2>
                 <button
                   onClick={closeProfileModal}
-                  className="p-2 hover:bg-red-500/20 rounded-xl transition-all duration-300 hover:scale-110 border border-red-500/30"
+                  className="p-1.5 hover:bg-gray-100 rounded transition-colors"
                 >
-                  <XCircle className="w-6 h-6 text-red-400" />
+                  <XCircle className="w-5 h-5 text-gray-500" />
                 </button>
               </div>
 
               {loadingProfile ? (
                 <div className="flex items-center justify-center py-12">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                  <div className="rounded-full h-10 w-10 border-2 border-gray-400 border-t-transparent animate-spin"></div>
                 </div>
               ) : userProfile ? (
                 <div className="space-y-4">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-r from-blue-500 via-emerald-500 to-blue-500 flex items-center justify-center text-white text-3xl font-bold shadow-xl shadow-blue-500/30 animate-pulse-slow">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-16 h-16 rounded-full bg-gray-300 border border-gray-400 flex items-center justify-center text-gray-700 text-2xl font-bold">
                       {userProfile.username.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-white mb-1">{userProfile.username}</h3>
-                      <p className="text-slate-400">{userProfile.email}</p>
+                      <h3 className="text-xl font-bold text-gray-800">{userProfile.username}</h3>
+                      <p className="text-gray-400 text-sm">{userProfile.email}</p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/10 rounded-xl p-4 border border-blue-500/30 hover:border-blue-500/50 transition-all duration-300">
-                      <p className="text-slate-400 text-sm mb-2 font-semibold">Posts</p>
-                      <p className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">{userProfile.post_count}</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-gray-50 rounded border border-gray-200 p-4">
+                      <p className="text-gray-400 text-xs mb-1 font-medium uppercase tracking-wider">Posts</p>
+                      <p className="text-2xl font-bold text-gray-800">{userProfile.post_count}</p>
                     </div>
-                    <div className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 rounded-xl p-4 border border-emerald-500/30 hover:border-emerald-500/50 transition-all duration-300">
-                      <p className="text-slate-400 text-sm mb-2 font-semibold">Communities</p>
-                      <p className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">{userProfile.community_count}</p>
+                    <div className="bg-gray-50 rounded border border-gray-200 p-4">
+                      <p className="text-gray-400 text-xs mb-1 font-medium uppercase tracking-wider">Communities</p>
+                      <p className="text-2xl font-bold text-gray-800">{userProfile.community_count}</p>
                     </div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-slate-700/50 to-slate-800/50 rounded-xl p-4 border border-slate-600/30 mb-4">
-                    <p className="text-slate-400 text-sm mb-2 font-semibold">Member Since</p>
-                    <p className="text-white text-lg">
-                      {new Date(userProfile.created_at).toLocaleDateString()}
-                    </p>
+                  <div className="bg-gray-50 rounded border border-gray-200 p-4">
+                    <p className="text-gray-400 text-xs mb-1 font-medium uppercase tracking-wider">Member Since</p>
+                    <p className="text-gray-800">{new Date(userProfile.created_at).toLocaleDateString()}</p>
                   </div>
 
-                  {/* Reports Section */}
                   {userProfile.report_count > 0 && (
-                    <div className="mb-4">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-2 h-2 rounded-full bg-red-500"></div>
-                        <h4 className="text-lg font-bold text-white">
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-2 h-2 rounded-full bg-gray-500"></div>
+                        <h4 className="text-base font-bold text-gray-700">
                           Reports ({userProfile.report_count})
                         </h4>
                       </div>
@@ -636,35 +679,19 @@ const Profile = ({ userId }: ProfileProps) => {
                         {userProfile.reports.map((report) => (
                           <div
                             key={report.id}
-                            className="bg-gradient-to-r from-red-500/10 to-red-600/5 rounded-xl p-3 border border-red-500/30"
+                            className="bg-gray-50 rounded border border-gray-300 p-3"
                           >
-                            <div className="flex items-start justify-between mb-2">
-                              <div className="flex-1">
-                                <p className="text-red-300 font-semibold text-sm mb-1">
-                                  {report.reason}
-                                </p>
-                                {report.description && (
-                                  <p className="text-slate-300 text-xs mb-2">
-                                    {report.description}
-                                  </p>
-                                )}
-                                <div className="flex items-center gap-2 text-xs">
-                                  <span className="text-slate-400">
-                                    By: {report.reporter_username}
-                                  </span>
-                                  <span className={`px-2 py-0.5 rounded-lg ${
-                                    report.status === 'resolved' 
-                                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                                      : report.status === 'under_review'
-                                      ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-                                      : 'bg-red-500/20 text-red-300 border border-red-500/30'
-                                  }`}>
-                                    {report.status}
-                                  </span>
-                                </div>
-                              </div>
+                            <p className="text-gray-700 font-medium text-sm mb-1">{report.reason}</p>
+                            {report.description && (
+                              <p className="text-gray-500 text-xs mb-2">{report.description}</p>
+                            )}
+                            <div className="flex items-center gap-2 text-xs">
+                              <span className="text-gray-400">By: {report.reporter_username}</span>
+                              <span className="px-2 py-0.5 rounded bg-gray-200 text-gray-600 border border-gray-300">
+                                {report.status}
+                              </span>
                             </div>
-                            <p className="text-slate-500 text-xs mt-1">
+                            <p className="text-gray-400 text-xs mt-1">
                               {new Date(report.created_at).toLocaleDateString()}
                             </p>
                           </div>
@@ -674,30 +701,28 @@ const Profile = ({ userId }: ProfileProps) => {
                   )}
 
                   {userProfile.report_count === 0 && (
-                    <div className="mb-4 bg-gradient-to-r from-emerald-500/10 to-emerald-600/5 rounded-xl p-3 border border-emerald-500/30">
-                      <p className="text-emerald-300 text-sm font-semibold flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <div className="bg-gray-50 rounded border border-gray-200 p-3">
+                      <p className="text-gray-500 text-sm font-medium flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-gray-400"></span>
                         No reports - Clean profile
                       </p>
                     </div>
                   )}
 
-                  <div className="flex gap-3 mt-6">
+                  <div className="flex gap-3 mt-4">
                     <button
                       onClick={() => {
                         closeProfileModal();
                         const request = requests.find(r => r.user_id === viewingProfile);
-                        if (request) {
-                          handleApproveRequest(request.request_id);
-                        }
+                        if (request) handleApproveRequest(request.request_id);
                       }}
-                      className="flex-1 px-4 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-xl hover:from-emerald-500 hover:to-emerald-600 transition-all duration-300 shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/50 hover:scale-105 font-semibold"
+                      className="flex-1 px-4 py-2.5 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors font-medium text-sm"
                     >
                       Approve Request
                     </button>
                     <button
                       onClick={closeProfileModal}
-                      className="flex-1 px-4 py-3 bg-gradient-to-r from-slate-700 to-slate-600 text-white rounded-xl hover:from-slate-600 hover:to-slate-500 transition-all duration-300 shadow-lg shadow-slate-500/20 hover:shadow-xl hover:shadow-slate-500/30 hover:scale-105 font-semibold"
+                      className="flex-1 px-4 py-2.5 bg-white border border-gray-400 text-gray-600 rounded hover:bg-gray-100 transition-colors font-medium text-sm"
                     >
                       Close
                     </button>
@@ -705,7 +730,7 @@ const Profile = ({ userId }: ProfileProps) => {
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <p className="text-slate-400">Failed to load profile</p>
+                  <p className="text-gray-400">Failed to load profile</p>
                 </div>
               )}
             </div>

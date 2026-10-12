@@ -40,29 +40,29 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/30 to-slate-900 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-blue-500/20 animate-fade-in">
+        <div className="bg-white rounded border border-gray-300 shadow-sm p-8">
           <div className="text-center mb-8">
-            <h1 className="text-5xl font-bold text-white mb-2">Welcome Back</h1>
-            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-emerald-500 mx-auto rounded-full"></div>
+            <h1 className="text-4xl font-bold text-gray-800 mb-2">Welcome Back</h1>
+            <div className="w-16 h-0.5 bg-gray-300 mx-auto"></div>
           </div>
 
           {success && (
-            <div className="mb-6 p-4 bg-emerald-500/20 border border-emerald-500/50 rounded-lg">
-              <p className="text-emerald-400 text-center font-medium">Login Successful!</p>
+            <div className="mb-6 p-4 bg-gray-100 border border-gray-400 rounded">
+              <p className="text-gray-700 text-center font-medium">Login Successful!</p>
             </div>
           )}
 
           {error && (
-            <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg">
-              <p className="text-red-400 text-center font-medium">{error}</p>
+            <div className="mb-6 p-4 bg-gray-100 border border-gray-400 rounded">
+              <p className="text-gray-600 text-center font-medium">{error}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="email" className="block text-slate-300 font-medium mb-2">
+              <label htmlFor="email" className="block text-gray-600 font-medium mb-2 text-sm">
                 Email
               </label>
               <input
@@ -71,13 +71,13 @@ const Login = () => {
                 id="email"
                 required
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-slate-900/70 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 transition-all"
                 placeholder="Enter your email"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-slate-300 font-medium mb-2">
+              <label htmlFor="password" className="block text-gray-600 font-medium mb-2 text-sm">
                 Password
               </label>
               <input
@@ -86,23 +86,23 @@ const Login = () => {
                 id="password"
                 required
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-slate-900/70 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 transition-all"
                 placeholder="Enter your password"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/50 hover:scale-105"
+              className="w-full py-2.5 bg-gray-800 text-white font-semibold rounded hover:bg-gray-700 transition-colors"
             >
               Login
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-slate-400 mb-4">Don't have an account?</p>
+            <p className="text-gray-400 text-sm mb-4">Don't have an account?</p>
             <Link to="/register">
-              <button className="w-full py-3 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/50 hover:scale-105">
+              <button className="w-full py-2.5 bg-white border border-gray-400 text-gray-700 font-semibold rounded hover:bg-gray-100 transition-colors">
                 Register
               </button>
             </Link>

@@ -15,7 +15,6 @@ function Home() {
   const [username, setUsername] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // Single useEffect - removed duplicate
   useEffect(() => {
     fetch("http://localhost/Interconnected/backend/api/session-check.php", {
       method: "GET",
@@ -38,54 +37,54 @@ function Home() {
 
   return (
     <>
-      <nav className="bg-gradient-to-r from-slate-900 via-blue-900/50 to-slate-900 backdrop-blur-xl border-b border-blue-500/20 text-white px-6 py-4 flex items-center justify-between shadow-2xl shadow-blue-500/10 sticky top-0 z-40">
+      <nav className="bg-white border-b border-gray-300 text-gray-700 px-6 py-3 flex items-center justify-between sticky top-0 z-40">
         {/* Left section: Logo + Nav Links */}
         <div className="flex items-center space-x-6">
           <div className="flex items-center gap-3">
             <img
               src={logo}
               alt="Logo"
-              className="w-12 h-12 rounded-full border-2 border-blue-400/50 shadow-lg shadow-blue-500/30 hover:scale-110 transition-transform duration-300"
+              className="w-10 h-10 rounded border border-gray-300"
             />
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent hidden md:block">
+            <span className="text-lg font-bold text-gray-800 hidden md:block">
               Interconnected
             </span>
           </div>
           <div className="flex items-center gap-1">
             <Link
               to="/home"
-              className="px-4 py-2 rounded-lg hover:bg-blue-500/20 hover:text-blue-300 transition-all duration-300 font-medium"
+              className="px-3 py-2 rounded text-sm hover:bg-gray-100 text-gray-600 transition-colors font-medium"
             >
               Home
             </Link>
             <Link
               to="/home/community"
-              className="px-4 py-2 rounded-lg hover:bg-emerald-500/20 hover:text-emerald-300 transition-all duration-300 font-medium"
+              className="px-3 py-2 rounded text-sm hover:bg-gray-100 text-gray-600 transition-colors font-medium"
             >
               Community
             </Link>
             <Link
               to="/home/profile"
-              className="px-4 py-2 rounded-lg hover:bg-blue-500/20 hover:text-blue-300 transition-all duration-300 font-medium"
+              className="px-3 py-2 rounded text-sm hover:bg-gray-100 text-gray-600 transition-colors font-medium"
             >
               Profile
             </Link>
             <Link
               to="/home/post"
-              className="px-4 py-2 rounded-lg hover:bg-emerald-500/20 hover:text-emerald-300 transition-all duration-300 font-medium"
+              className="px-3 py-2 rounded text-sm hover:bg-gray-100 text-gray-600 transition-colors font-medium"
             >
               Post
             </Link>
             <Link
               to="/home/create_community"
-              className="px-4 py-2 rounded-lg hover:bg-blue-500/20 hover:text-blue-300 transition-all duration-300 font-medium"
+              className="px-3 py-2 rounded text-sm hover:bg-gray-100 text-gray-600 transition-colors font-medium"
             >
               Create Community
             </Link>
             {isAdmin && (
               <Link
                 to="/home/admin"
-                className="px-4 py-2 rounded-lg hover:bg-red-500/20 hover:text-red-300 transition-all duration-300 font-medium border border-red-500/30"
+                className="px-3 py-2 rounded text-sm hover:bg-gray-100 text-gray-600 transition-colors font-medium border border-gray-400"
               >
                 Admin
               </Link>
@@ -95,9 +94,9 @@ function Home() {
 
         {/* Right section: Welcome + Logout */}
         <div className="flex items-center space-x-4">
-          <div className="hidden md:block px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500/20 to-emerald-500/20 border border-blue-500/30">
-            <span className="text-slate-300">
-              Welcome, <span className="text-white font-semibold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">{username}</span>!
+          <div className="hidden md:block px-3 py-1.5 rounded border border-gray-300 bg-gray-50">
+            <span className="text-gray-500 text-sm">
+              Welcome, <span className="text-gray-800 font-semibold">{username}</span>!
             </span>
           </div>
           <LogoutButton />

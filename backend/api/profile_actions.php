@@ -90,6 +90,7 @@ else if ($action === 'get_created_communities' && $_SERVER['REQUEST_METHOD'] ===
                 c.com_name,
                 c.category,
                 c.com_description,
+                c.privacy,
                 c.created_at,
                 COUNT(DISTINCT cm.id) as member_count
             FROM communities c
@@ -100,6 +101,42 @@ else if ($action === 'get_created_communities' && $_SERVER['REQUEST_METHOD'] ===
     
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    
+    $communities = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $communities[] = $row;
+    }
+    
+    echo json_encode([
+        "status" => "success",
+        "communities" => $communities
+    ]);
+}
+
+// ============================================
+// GET COMMUNITIES JOINED BY USER (NOT CREATED)
+// ============================================
+else if ($action === 'get_joined_communities' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    $sql = "SELECT 
+                c.id,
+                c.com_name,
+                c.category,
+                c.com_description,
+                c.privacy,
+                cm.joined_at,
+                cm.role,
+                (SELECT COUNT(*) FROM community_members WHERE community_id = c.id) as member_count
+            FROM community_members cm
+            INNER JOIN communities c ON cm.community_id = c.id
+            WHERE cm.user_id = ? 
+            AND c.created_by != ? 
+            AND cm.role != 'requesting'
+            ORDER BY cm.joined_at DESC";
+    
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $user_id, $user_id);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     

@@ -50,24 +50,26 @@ const Create_community = () => {
     }
   };
 
+  const inputClass = "w-full px-4 py-2.5 bg-white border border-gray-300 rounded text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 transition-all";
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/30 to-slate-900 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-md">
-        <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-blue-500/20 animate-fade-in">
+        <div className="bg-white rounded border border-gray-300 shadow-sm p-8">
           <div className="text-center mb-8">
-            <h1 className="text-5xl font-bold text-white mb-2">Create Community</h1>
-            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-emerald-500 mx-auto rounded-full"></div>
+            <h1 className="text-4xl font-bold text-gray-800 mb-2">Create Community</h1>
+            <div className="w-16 h-0.5 bg-gray-300 mx-auto"></div>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg">
-              <p className="text-red-400 text-center">{error}</p>
+            <div className="mb-6 p-4 bg-gray-100 border border-gray-400 rounded">
+              <p className="text-gray-600 text-center text-sm">{error}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-slate-300 font-medium mb-2">
+              <label className="block text-gray-600 font-medium mb-2 text-sm">
                 Community Name *
               </label>
               <input
@@ -76,14 +78,14 @@ const Create_community = () => {
                 required
                 value={input.com_name}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-slate-900/70 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
+                className={inputClass}
                 placeholder="Enter community name"
                 maxLength={100}
               />
             </div>
 
             <div>
-              <label className="block text-slate-300 font-medium mb-2">
+              <label className="block text-gray-600 font-medium mb-2 text-sm">
                 Category *
               </label>
               <input
@@ -92,42 +94,42 @@ const Create_community = () => {
                 required
                 value={input.category}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-slate-900/70 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
+                className={inputClass}
                 placeholder="e.g. Tech, Fitness, Gaming"
                 maxLength={50}
               />
             </div>
 
             <div>
-              <label className="block text-slate-300 font-medium mb-2">
+              <label className="block text-gray-600 font-medium mb-2 text-sm">
                 Privacy *
               </label>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => setInput({ ...input, privacy: "public" })}
-                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 transition-all duration-300 ${input.privacy === "public"
-                    ? "border-emerald-500 bg-emerald-500/20 text-emerald-300 shadow-lg shadow-emerald-500/20"
-                    : "border-slate-600/50 bg-slate-900/50 text-slate-400 hover:border-slate-500 hover:bg-slate-800/50"
+                  className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded border-2 transition-colors text-sm font-medium ${input.privacy === "public"
+                      ? "border-gray-700 bg-gray-700 text-white"
+                      : "border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
                     }`}
                 >
-                  <Globe className="w-5 h-5" />
-                  <span className="font-medium">Public</span>
+                  <Globe className="w-4 h-4" />
+                  <span>Public</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setInput({ ...input, privacy: "private" })}
-                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 transition-all duration-300 ${input.privacy === "private"
-                    ? "border-blue-500 bg-blue-500/20 text-blue-300 shadow-lg shadow-blue-500/20"
-                    : "border-slate-600/50 bg-slate-900/50 text-slate-400 hover:border-slate-500 hover:bg-slate-800/50"
+                  className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded border-2 transition-colors text-sm font-medium ${input.privacy === "private"
+                      ? "border-gray-700 bg-gray-700 text-white"
+                      : "border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
                     }`}
                 >
-                  <Lock className="w-5 h-5" />
-                  <span className="font-medium">Private</span>
+                  <Lock className="w-4 h-4" />
+                  <span>Private</span>
                 </button>
               </div>
-              <p className="mt-2 text-sm text-slate-400">
+              <p className="mt-2 text-xs text-gray-400">
                 {input.privacy === "public"
                   ? "Anyone can view and join this community"
                   : "Only invited members can view and join"}
@@ -135,7 +137,7 @@ const Create_community = () => {
             </div>
 
             <div>
-              <label className="block text-slate-300 font-medium mb-2">
+              <label className="block text-gray-600 font-medium mb-2 text-sm">
                 Description *
               </label>
               <textarea
@@ -144,7 +146,7 @@ const Create_community = () => {
                 value={input.com_description}
                 onChange={handleChange}
                 rows={5}
-                className="w-full px-4 py-3 bg-slate-900/70 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all resize-none"
+                className={`${inputClass} resize-none`}
                 placeholder="Describe your community"
               />
             </div>
@@ -152,7 +154,7 @@ const Create_community = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="w-full py-2.5 bg-gray-800 text-white font-semibold rounded hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? "Creating..." : "Create Community"}
             </button>
